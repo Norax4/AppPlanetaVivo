@@ -1,20 +1,6 @@
 import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
 import { Button } from '../components/Button';
 
-const styles = StyleSheet.create({
-	safeAreaView: {
-		flex: 1,
-	},
-	view: {
-		flex: 1,
-		justifyContent: 'center',
-		backgroundColor: '#c9fdd7',
-	},
-	scrollView: {
-		marginHorizontal: 30,
-	},
-});
-
 export function HomeScreen({ navigation }) {
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
@@ -52,3 +38,17 @@ export function HomeScreen({ navigation }) {
 		</SafeAreaView>
 	);
 }
+
+const styles = StyleSheet.create({
+	safeAreaView: {
+		flex: 1,
+	},
+	view: {
+		flex: 1,
+		justifyContent: 'center',
+		backgroundColor: '#c9fdd7',
+	},
+	scrollView: {
+		marginHorizontal: 30,
+	},
+});

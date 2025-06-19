@@ -1,5 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
+export function Button({ onPress, btnBgColor, btnText }) {
+	return (
+		<TouchableOpacity
+			style={[styles.button, { backgroundColor: btnBgColor }]}
+			onPress={onPress}
+		>
+			<Text style={styles.text}>{btnText}</Text>
+		</TouchableOpacity>
+	);
+}
+
 const styles = StyleSheet.create({
 	button: {
 		flex: 1,
@@ -15,14 +26,3 @@ const styles = StyleSheet.create({
 		fontWeight: 700,
 	},
 });
-
-export function Button({ onPress, btnBgColor, btnText }) {
-	return (
-		<TouchableOpacity
-			style={[styles.button, { backgroundColor: btnBgColor }]}
-			onPress={onPress}
-		>
-			<Text style={styles.text}>{btnText}</Text>
-		</TouchableOpacity>
-	);
-}
