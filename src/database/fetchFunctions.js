@@ -9,6 +9,8 @@ export async function fetchAllusers() {
                 return { key, value };
             }
         });
+
+        return users;
     } catch(error) {
         console('Error al conseguir usuarios:', error)
         return error;

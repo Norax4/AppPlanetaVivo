@@ -1,16 +1,28 @@
-import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, View, SafeAreaView, ScrollView, ActivityIndicator } from 'react-native';
 import { Button } from '../components/Button';
+import { AuthContext } from '../database/authContext';
 
 export function HomeScreen({ navigation }) {
+	const { user, loading } = useContext(AuthContext);
+
+	if (loading) {
+		<View style={{ flex: 1, justifyContent: 'center', alignContent: 'center'}}>
+			<ActivityIndicator size="large" />
+		</View>
+	}
+
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
+					{/* user ? ():() para mostrar diferentes botones si el usuario debe loggearse/registrarse o ya esta loggeado */}
 					<Button
 						onPress={() => navigation.navigate('RegisterUser')}
 						btnBgColor={'#6892d5'}
 						btnText={'Registro de Usuarios'}
 					/>
+					
 					<Button
 						onPress={() => navigation.navigate('RegisterChallenge')}
 						btnBgColor={'#6892d5'}

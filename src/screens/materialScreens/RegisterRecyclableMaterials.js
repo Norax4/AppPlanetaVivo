@@ -6,14 +6,16 @@ import { InputNumber } from '../../components/InputNumber';
 import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export function RegisterChallenge() {
-    <SafeAreaView>
-        <View>
-            <ScrollView>
-                Crear un reto
-            </ScrollView>
-        </View>
-    </SafeAreaView>
+export function RegisterRecMats() {
+    return (
+        <SafeAreaView>
+            <View>
+                <ScrollView>
+                    
+                </ScrollView>
+            </View>
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
