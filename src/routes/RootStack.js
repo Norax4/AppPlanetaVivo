@@ -5,6 +5,8 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { RegisterUser } from '../screens/userScreens/RegisterUser';
 import { RegisterRecMats } from '../screens/materialScreens/RegisterRecyclableMaterials';
 import { RegisterChallenge } from '../screens/challengeScreens/RegisterChallenge';
+import { ChallengesList } from '../screens/challengeScreens/ChallengesList';
+import { LoginUser } from '../screens/userScreens/LoginUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +24,11 @@ export function RootStack() {
 					component={RegisterUser}
 					options={{ title: 'Registrar Usuario' }}
 				/>
+				<Stack.Screen
+					name='LoginUser'
+					component={LoginUser}
+					options={{ title: 'Ingrese a su cuenta' }}
+				/>
 				<Stack.Screen 
 					name='RegisterRecyclableMaterials'
 					component={RegisterRecMats}
@@ -31,6 +38,11 @@ export function RootStack() {
 					name='RegisterChallenge'
 					component={RegisterChallenge}
 					options={{ title: 'Crear un Reto'}}
+				/>
+				<Stack.Screen 
+					name='ChallengesList'
+					component={ChallengesList}
+					options={{ title: 'Retos disponibles' }}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

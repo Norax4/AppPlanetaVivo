@@ -16,23 +16,25 @@ export function RegisterUser({ navigation }) {
 		formState: { errors },
 	} = useForm();
 
-    
-
     console.log(watch());
 
     const registerUser = async(user) => {
         console.log('usuario async:', user);
+
+		//const extraInfo = {}; para añadir más informacion a los usuarios al registrarse, como cantidad de puntos
+
         AsyncStorage.setItem(user.email, JSON.stringify(user));
-        console.log('usuario registrado');
+		AsyncStorage.setItem('loggedUser', )
+
+		let newUser = await AsyncStorage.getItem(user.email);
+        console.log('usuario registrado:', newUser);
         
     }
 
 	const onSubmit = (data) => {
         console.log('user onSubmit:', data);
-        const user = data;
-        console.log('userSi:', user);
 
-        //registerUser(data);
+        registerUser(data);
 
 		/*Alert.alert("Exito", "Usuario registrado exitosamente",
             [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], { cancelable: false }

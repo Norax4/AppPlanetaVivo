@@ -6,3 +6,6 @@ import { InputNumber } from '../../components/InputNumber';
 import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export function ChallengesList() {
+    
+}

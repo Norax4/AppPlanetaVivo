@@ -7,6 +7,18 @@ import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function RegisterRecMats() {
+	const {
+		control,
+		handleSubmit,
+		getValues,
+		watch,
+		formState: { errors },
+	} = useForm();
+
+	const onSubmit = (data) => {
+
+	};
+
     return (
         <SafeAreaView>
             <View>

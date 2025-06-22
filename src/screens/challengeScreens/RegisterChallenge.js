@@ -7,13 +7,27 @@ import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function RegisterChallenge() {
-    <SafeAreaView>
-        <View>
-            <ScrollView>
-                Crear un reto
-            </ScrollView>
-        </View>
-    </SafeAreaView>
+	const {
+		control,
+		handleSubmit,
+		getValues,
+		watch,
+		formState: { errors },
+	} = useForm();
+
+	const onSubmit = (data) => {
+
+	};
+
+	return (
+		<SafeAreaView>
+			<View>
+				<ScrollView>
+					Crear un reto
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
