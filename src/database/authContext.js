@@ -1,8 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchAllusers } from './fetchFunctions';
-import { useNavigation } from '@react-navigation/native';
-import { Alert } from 'react-native';
 
 //Llamada al contexto de la aplicación
 export const AuthContext = createContext();
@@ -11,7 +8,6 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
 
     useEffect(() => {
         const loadUser = async () => {
@@ -27,27 +23,25 @@ export const AuthProvider = ({ children }) => {
             }
         };
         loadUser();
-    })
+    }, [])
 
     const login = async (email, password) => {
-        if (user != null ) {
-            Alert.alert("Error", "¡Usted ya esta loggeado!", 
-                [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-                { cancelable: false });
+        if (user != null ) { //Si ya hay un usuario loggeado automaticamente
+            return {ok: false, message: "Usted ya esta loggeado a la app."};
         } else {
             const userToLog = AsyncStorage.getItem(email);
             if (userToLog != null) {
                 if (userToLog.password === password) {
+                    
                     setUser(userToLog); //Revisar que datos guardar
                     await AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
-                    Alert.alert("Exito", "¡Se ha loggeado correctamente!", 
-                        [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-                        { cancelable: false });
+
+                    return {ok: true, message: "¡Usuario ingresado exitosamente!"};
                 } else {
-                    Alert.alert("Error", "La contraseña ingresada no es correcta");
+                    return {ok: false, message: "La contraseña ingresada no es correcta."};
                 }
             } else {
-                Alert.alert("Error","El email ingresado no esta registrado en el sistema");
+                return {ok: false, message: "Usted no esta registrado en el sistema."};
             }
         }
     };
@@ -59,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{ user, login, logout, loading }}>
-            {children}
+            {children} {/*Todos los componentes dentro de AuthProvider, ver App.js*/}
         </AuthContext.Provider>
   );
 }

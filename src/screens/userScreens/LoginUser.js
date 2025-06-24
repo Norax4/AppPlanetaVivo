@@ -2,13 +2,12 @@ import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 
 import { InputText } from '../../components/InputText';
-import { InputNumber } from '../../components/InputNumber';
 import { Button } from '../../components/Button';
 import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
 
-export function LoginUser(){
+export function LoginUser({navigation}){
 	const {login} = useContext(AuthContext);
 
     const {
@@ -21,8 +20,20 @@ export function LoginUser(){
     console.log(watch());
 
     const onSubmit = (data) => {
-		login(data.email, data.password); //
-    }
+		const response = login(data.email, data.contrasenia); //Funcion login del contexto de la aplicación (AuthContext)
+		let message = response.message;
+		if (response.ok) {
+			Alert.alert("Exito", {message}, 
+			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
+			{ cancelable: false });
+		} else if (!response.ok && response.message === "Usted ya esta loggeado a la app.") {
+			Alert.alert("Error", {message}, 
+			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
+			{ cancelable: false });
+		} else {
+			Alert.alert("Error", {message});
+		}
+	}
 
     return(
         <SafeAreaView style={styles.safeAreaView}>

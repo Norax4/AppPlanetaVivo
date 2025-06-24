@@ -1,13 +1,18 @@
 import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 
+import * as ImagePicker from 'expo-image-picker'; //manejar la subida de imagenes desde el dispositivo
 import { InputText } from '../../components/InputText';
 import { InputNumber } from '../../components/InputNumber';
 import { Button } from '../../components/Button';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
 
 export function RegisterUser({ navigation }) {
+	const {user, login } = useContext(AuthContext);
+
 	const {
 		control,
 		handleSubmit,
@@ -18,29 +23,53 @@ export function RegisterUser({ navigation }) {
 
     console.log(watch());
 
-    const registerUser = async(user) => {
-        console.log('usuario async:', user);
+    const registerUser = async(regUser) => {
+        console.log('usuario async:', regUser);
 
-		//const extraInfo = {}; para añadir más informacion a los usuarios al registrarse, como cantidad de puntos
+		const extraInfo = {
+			points: 0
+		}; 
 
-        AsyncStorage.setItem(user.email, JSON.stringify(user));
-		AsyncStorage.setItem('loggedUser', )
+		const completeUser = {
+			...regUser, ...extraInfo
+		}
+
+		console.log(completeUser);
+
+        AsyncStorage.setItem(completeUser.email, JSON.stringify(completeUser));
+		const response = login(completeUser.email, completeUser.contrasenia);
 
 		let newUser = await AsyncStorage.getItem(user.email);
         console.log('usuario registrado:', newUser);
         
+		return response;
     }
 
 	const onSubmit = (data) => {
         console.log('user onSubmit:', data);
 
-        registerUser(data);
+		/*if (user != null) {
+			Alert.alert("Error", "Usted esta loggeado a la app.",
+			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
+			{ cancelable: false }
+			);
+		}*/
+		
+        const response = registerUser(data);
 
-		/*Alert.alert("Exito", "Usuario registrado exitosamente",
-            [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], { cancelable: false }
-        );*/
+		console.log(response);
 
-        alert('Exito');
+		/*if (response.ok) {
+			Alert.alert("Exito", "Logged",
+            [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
+			{ cancelable: false }
+        	);
+		} else {
+			Alert.alert("Error", "Not logged",
+            [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
+			{ cancelable: false }
+        	); //?
+		}*/
 	};
 
 	return (
@@ -49,11 +78,34 @@ export function RegisterUser({ navigation }) {
 				<ScrollView style={styles.scrollView}>
 					<Controller
 						control={control}
+						name='nombreUser'
+						rules={{
+							required: 'El nombre de usuario es requerido',
+							pattern: {
+								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+								message: 'Debe ingresar un nombre válido',
+							},
+						}}
+						render={({ field: { onChange, onBlur, value } }) => (
+							<InputText
+								placeholder='Nombre y Apellido'
+								onChange={(text) => onChange(text)}
+								onBlur={onBlur}
+								value={value}
+							/>
+						)}
+					/>
+					{errors.nombreUser && (
+						<Text style={styles.error}>{errors.email.message}</Text>
+					)}
+
+					<Controller
+						control={control}
 						name='email'
 						rules={{
 							required: 'El email es requerido',
 							pattern: {
-								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+								value: /[A-Za-z0-9]+/,
 								message: 'Debe ingresar un email válido',
 							},
 						}}

@@ -7,6 +7,7 @@ import { RegisterRecMats } from '../screens/materialScreens/RegisterRecyclableMa
 import { RegisterChallenge } from '../screens/challengeScreens/RegisterChallenge';
 import { ChallengesList } from '../screens/challengeScreens/ChallengesList';
 import { LoginUser } from '../screens/userScreens/LoginUser';
+import { SelectedChallenge } from '../screens/challengeScreens/SelectedChallenge';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,11 @@ export function RootStack() {
 					name='ChallengesList'
 					component={ChallengesList}
 					options={{ title: 'Retos disponibles' }}
+				/>
+				<Stack.Screen 
+					name='SelectedChallenge'
+					component={SelectedChallenge}
+					//options title?
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>
