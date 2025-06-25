@@ -46,7 +46,7 @@ export function RegisterRecMats({navigation}) {
 						)}
 						/>
 						{errors.nombreMaterial && (
-							<Text style={styles.error}>{errors.email.message}</Text>
+							<Text style={styles.error}>{errors.nombreMaterial.message}</Text>
 						)}
 
 					<Controller

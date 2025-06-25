@@ -57,7 +57,7 @@ export function RegisterChallenge({navigation}) {
 						)}
 						/>
 						{errors.nombreReto && (
-							<Text style={styles.error}>{errors.email.message}</Text>
+							<Text style={styles.error}>{errors.nombreReto.message}</Text>
 						)}
 
 					<Controller
@@ -79,8 +79,8 @@ export function RegisterChallenge({navigation}) {
 							/>
 						)}
 						/>
-						{errors.nombreReto && (
-							<Text style={styles.error}>{errors.email.message}</Text>
+						{errors.descripcion && (
+							<Text style={styles.error}>{errors.descripcion.message}</Text>
 						)}
 
 					<Controller
@@ -138,6 +138,7 @@ export function RegisterChallenge({navigation}) {
 							/>
 						)}
 						/>
+						
 
 					<Controller
 						control={control}
@@ -158,6 +159,9 @@ export function RegisterChallenge({navigation}) {
 							/>
 						)}
 						/>
+						{errors.puntaje && (
+							<Text style={styles.error}>{errors.puntaje.message}</Text>
+						)}
 
 						<Button
 							btnBgColor='#6892d5'

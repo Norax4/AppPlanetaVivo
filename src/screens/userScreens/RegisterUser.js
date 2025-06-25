@@ -36,10 +36,10 @@ export function RegisterUser({ navigation }) {
 
 		console.log(completeUser);
 
-        AsyncStorage.setItem(completeUser.email, JSON.stringify(completeUser));
-		const response = login(completeUser.email, completeUser.contrasenia);
+        AsyncStorage.setItem(regUser.email, JSON.stringify(completeUser));
+		const response = login(regUser.email, regUser.contrasenia);
 
-		let newUser = await AsyncStorage.getItem(user.email);
+		let newUser = await AsyncStorage.getItem(regUser.email);
         console.log('usuario registrado:', newUser);
         
 		return response;
@@ -48,18 +48,18 @@ export function RegisterUser({ navigation }) {
 	const onSubmit = (data) => {
         console.log('user onSubmit:', data);
 
-		/*if (user != null) {
+		if (user != null) {
 			Alert.alert("Error", "Usted esta loggeado a la app.",
 			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
 			{ cancelable: false }
 			);
-		}*/
+		}
 		
         const response = registerUser(data);
 
 		console.log(response);
 
-		/*if (response.ok) {
+		if (response.ok) {
 			Alert.alert("Exito", "Logged",
             [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
 			{ cancelable: false }
@@ -69,7 +69,7 @@ export function RegisterUser({ navigation }) {
             [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
 			{ cancelable: false }
         	); //?
-		}*/
+		}
 	};
 
 	return (
@@ -82,7 +82,7 @@ export function RegisterUser({ navigation }) {
 						rules={{
 							required: 'El nombre de usuario es requerido',
 							pattern: {
-								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+								value: /[A-Za-z0-9]+/,
 								message: 'Debe ingresar un nombre válido',
 							},
 						}}
@@ -96,7 +96,7 @@ export function RegisterUser({ navigation }) {
 						)}
 					/>
 					{errors.nombreUser && (
-						<Text style={styles.error}>{errors.email.message}</Text>
+						<Text style={styles.error}>{errors.nombreUser.message}</Text>
 					)}
 
 					<Controller
@@ -105,7 +105,7 @@ export function RegisterUser({ navigation }) {
 						rules={{
 							required: 'El email es requerido',
 							pattern: {
-								value: /[A-Za-z0-9]+/,
+								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 								message: 'Debe ingresar un email válido',
 							},
 						}}
