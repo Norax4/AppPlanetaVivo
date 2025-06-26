@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../database/authContext';
 
 export function RegisterUser({ navigation }) {
-	const {user, login } = useContext(AuthContext);
+	const { user, login } = useContext(AuthContext);
 
 	const {
 		control,
@@ -21,55 +21,53 @@ export function RegisterUser({ navigation }) {
 		formState: { errors },
 	} = useForm();
 
-    console.log(watch());
+	//console.log(watch());
 
-    const registerUser = async(regUser) => {
-        console.log('usuario async:', regUser);
+	const registerUser = async (regUser) => {
+		const existe = await AsyncStorage.getItem(regUser.email);
+		if (existe) throw new Error('Usuario ya existe');
 
 		const extraInfo = {
-			points: 0
-		}; 
+			points: 0,
+		};
 
 		const completeUser = {
-			...regUser, ...extraInfo
-		}
+			...regUser,
+			...extraInfo,
+		};
 
-		console.log('full user:',completeUser);
+		await AsyncStorage.setItem(regUser.email, JSON.stringify(completeUser));
 
-        AsyncStorage.setItem(regUser.email, JSON.stringify(completeUser));
-		const response = login(regUser.email, regUser.contrasenia);
+		// assuming login throws if it fails
+		return await login(regUser.email, regUser.contrasenia);
+	};
 
-		let newUser = await AsyncStorage.getItem(regUser.email);
-        console.log('usuario registrado:', JSON.parse(newUser));
-        
-		return response;
-    }
-
-	const onSubmit = (data) => {
-        console.log('user onSubmit:', data);
-
+	const onSubmit = async (data) => {
 		if (user != null) {
-			Alert.alert("Error", "Usted esta loggeado a la app.",
-			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-			{ cancelable: false }
-			);
+			return Alert.alert('Error', 'Usted ya está logueado.', [
+				{
+					text: 'OK',
+					onPress: () => navigation.navigate('HomeScreen'),
+				},
+			]);
 		}
-		
-        const response = registerUser(data);
 
-		console.log(response);
+		try {
+			await registerUser(data);
 
-		if (response.ok) {
-			Alert.alert("Exito", "Logged",
-            [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-			{ cancelable: false }
-        	);
-		} else {
-			console.log(response.message);
-			Alert.alert("Error", "Not logged",
-            [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-			{ cancelable: false }
-        	); //?
+			Alert.alert('Éxito', 'Usuario registrado y logueado.', [
+				{
+					text: 'OK',
+					onPress: () => navigation.navigate('HomeScreen'),
+				},
+			]);
+		} catch (err) {
+			console.error(err);
+			Alert.alert(
+				'Error',
+				err.message || 'No se pudo registrar el usuario.',
+				[{ text: 'OK' }]
+			);
 		}
 	};
 
@@ -97,7 +95,9 @@ export function RegisterUser({ navigation }) {
 						)}
 					/>
 					{errors.nombreUser && (
-						<Text style={styles.error}>{errors.nombreUser.message}</Text>
+						<Text style={styles.error}>
+							{errors.nombreUser.message}
+						</Text>
 					)}
 
 					<Controller
@@ -222,7 +222,6 @@ export function RegisterUser({ navigation }) {
 							{errors.confirmarContrasenia.message}
 						</Text>
 					)}
-
 
 					<Button
 						btnBgColor='#6892d5'

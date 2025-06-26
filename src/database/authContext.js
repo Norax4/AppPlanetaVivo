@@ -6,54 +6,69 @@ export const AuthContext = createContext();
 
 //Envuelve la aplicación y mantiene el contexto para los demás componentes y pantallas
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const storedUser = await AsyncStorage.getItem('loggedUser'); 
-                if (storedUser != null) {
-                setUser(JSON.parse(storedUser));
-                }
-            } catch (e) {
-                console.log('Error cargando usuario:', e);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadUser();
-    }, [])
+	useEffect(() => {
+		const loadUser = async () => {
+			try {
+				const storedUser = await AsyncStorage.getItem('loggedUser');
+				if (storedUser != null) {
+					setUser(JSON.parse(storedUser));
+				}
+			} catch (e) {
+				console.log('Error cargando usuario:', e);
+			} finally {
+				setLoading(false);
+			}
+		};
+		loadUser();
+	}, []);
 
-    const login = async (email, password) => {
-        if (user != null ) { //Si ya hay un usuario loggeado automaticamente
-            return {ok: false, message: "Usted ya esta loggeado a la app."};
-        } else {
-            const userString = await AsyncStorage.getItem(email);
-            if (userToLog != null) {
-                if (userToLog.password === password) {
-                    
-                    setUser(JSON.parse(userToLog)); //Revisar que datos guardar
-                    AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
+	const login = async (email, password) => {
+		if (user != null) {
+			//Si ya hay un usuario loggeado automaticamente
+			return { ok: false, message: 'Usted ya esta loggeado a la app.' };
+		} else {
+			const userString = await AsyncStorage.getItem(email);
+			const userToLog = JSON.parse(userString);
 
-                    return {ok: true, message: "¡Usuario ingresado exitosamente!"};
-                } else {
-                    return {ok: false, message: "La contraseña ingresada no es correcta."};
-                }
-            } else {
-                return {ok: false, message: "Usted no esta registrado en el sistema."};
-            }
-        }
-    };
+			if (userToLog != null) {
+				if (userToLog.password === password) {
+					setUser(JSON.parse(userToLog)); //Revisar que datos guardar
+					AsyncStorage.setItem(
+						'loggedUser',
+						JSON.stringify(userToLog)
+					);
 
-    const logout = async () => {
-        setUser(null);
-        await AsyncStorage.removeItem('loggedUser');
-    };
+					return {
+						ok: true,
+						message: '¡Usuario ingresado exitosamente!',
+					};
+				} else {
+					return {
+						ok: false,
+						message: 'La contraseña ingresada no es correcta.',
+					};
+				}
+			} else {
+				return {
+					ok: false,
+					message: 'Usted no esta registrado en el sistema.',
+				};
+			}
+		}
+	};
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
-            {children} {/*Todos los componentes dentro de AuthProvider, ver App.js*/}
-        </AuthContext.Provider>
-  );
-}
+	const logout = async () => {
+		setUser(null);
+		await AsyncStorage.removeItem('loggedUser');
+	};
+
+	return (
+		<AuthContext.Provider value={{ user, login, logout, loading }}>
+			{children}{' '}
+			{/*Todos los componentes dentro de AuthProvider, ver App.js*/}
+		</AuthContext.Provider>
+	);
+};
