@@ -29,12 +29,12 @@ export const AuthProvider = ({ children }) => {
         if (user != null ) { //Si ya hay un usuario loggeado automaticamente
             return {ok: false, message: "Usted ya esta loggeado a la app."};
         } else {
-            const userToLog = AsyncStorage.getItem(email);
+            const userString = await AsyncStorage.getItem(email);
             if (userToLog != null) {
                 if (userToLog.password === password) {
                     
-                    setUser(userToLog); //Revisar que datos guardar
-                    await AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
+                    setUser(JSON.parse(userToLog)); //Revisar que datos guardar
+                    AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
 
                     return {ok: true, message: "¡Usuario ingresado exitosamente!"};
                 } else {

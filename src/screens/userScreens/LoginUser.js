@@ -83,11 +83,11 @@ export function LoginUser({navigation}){
 								/>
 							)}
 							/>
-							{/*errors.contrasenia && (
+							{errors.contrasenia && (
 							<Text style={styles.error}>
 								{errors.contrasenia.message}
 							</Text>
-							)*/}
+							)}
 
                     <Button
 						btnBgColor='#6892d5'

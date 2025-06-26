@@ -6,7 +6,7 @@ import { AuthContext } from '../database/authContext';
 export function HomeScreen({ navigation }) {
 	const { user, loading } = useContext(AuthContext);
 
-	console.log(user);
+	console.log('usuario loggeado:',user);
 
 	if (loading) {
 		return (
@@ -60,9 +60,6 @@ export function HomeScreen({ navigation }) {
 						/>
 					</>
 					) /*para mostrar diferentes botones si el usuario debe loggearse/registrarse o ya esta loggeado */}
-					
-					
-					
 				</ScrollView>
 			</View>
 		</SafeAreaView>

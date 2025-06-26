@@ -8,6 +8,7 @@ import { RegisterChallenge } from '../screens/challengeScreens/RegisterChallenge
 import { ChallengesList } from '../screens/challengeScreens/ChallengesList';
 import { LoginUser } from '../screens/userScreens/LoginUser';
 import { SelectedChallenge } from '../screens/challengeScreens/SelectedChallenge';
+import { UserPanel } from '../screens/userScreens/UserPanel';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ export function RootStack() {
 				<Stack.Screen
 					name='LoginUser'
 					component={LoginUser}
+					options={{ title: 'Ingrese a su cuenta' }}
+				/>
+				<Stack.Screen
+					name='UserPanel'
+					component={UserPanel}
 					options={{ title: 'Ingrese a su cuenta' }}
 				/>
 				<Stack.Screen 

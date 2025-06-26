@@ -34,13 +34,13 @@ export function RegisterUser({ navigation }) {
 			...regUser, ...extraInfo
 		}
 
-		console.log(completeUser);
+		console.log('full user:',completeUser);
 
         AsyncStorage.setItem(regUser.email, JSON.stringify(completeUser));
 		const response = login(regUser.email, regUser.contrasenia);
 
 		let newUser = await AsyncStorage.getItem(regUser.email);
-        console.log('usuario registrado:', newUser);
+        console.log('usuario registrado:', JSON.parse(newUser));
         
 		return response;
     }
@@ -65,6 +65,7 @@ export function RegisterUser({ navigation }) {
 			{ cancelable: false }
         	);
 		} else {
+			console.log(response.message);
 			Alert.alert("Error", "Not logged",
             [{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
 			{ cancelable: false }
