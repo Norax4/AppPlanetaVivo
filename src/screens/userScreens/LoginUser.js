@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import { useContext } from 'react';
+import { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
 	Alert,
@@ -12,10 +12,10 @@ import {
 
 import { Button } from '../../components/Button';
 import { InputText } from '../../components/InputText';
-//import { AuthContext } from '../../database/authContext';
+import { AuthContext } from '../../database/authContext';
 
 export function LoginUser({ navigation }) {
-	//const { login } = useContext(AuthContext);
+	const { login } = useContext(AuthContext);
 
 	const {
 		control,
@@ -23,26 +23,18 @@ export function LoginUser({ navigation }) {
 		formState: { errors },
 	} = useForm();
 
-	const login = async (email) => {
-		return await AsyncStorage.getItem(email);
-	};
-
 	const onSubmit = async (data) => {
-		//const response = login(data.email, data.contrasenia);
-		const userToLogPromise = await login(data.email.toLowerCase());
-		const userToLog = JSON.parse(userToLogPromise);
+		const response = await login(data.email, data.contrasenia);
 
-		console.log(userToLog.contrasenia, data.contrasenia);
-
-		if (userToLog.contrasenia === data.contrasenia) {
+		if (response.ok) {
 			AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
 
 			Alert.alert(
 				'Exito',
-				'logueado de forma exitosa',
+				response.message,
 				[
 					{
-						ext: 'OK',
+						text: 'OK',
 						onPress: () => navigation.navigate('HomeScreen'),
 					},
 				],
@@ -51,7 +43,7 @@ export function LoginUser({ navigation }) {
 		} else {
 			Alert.alert(
 				'Error',
-				'usuario o contraseña incorrectos',
+				response.message,
 				[
 					{
 						text: 'OK',

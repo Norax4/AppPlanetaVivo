@@ -1,17 +1,29 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, SafeAreaView, ScrollView, ActivityIndicator } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	SafeAreaView,
+	ScrollView,
+	ActivityIndicator,
+} from 'react-native';
 import { Button } from '../components/Button';
 import { AuthContext } from '../database/authContext';
 
 export function HomeScreen({ navigation }) {
-	const { user, loading } = useContext(AuthContext);
+	const { user, loading, logout } = useContext(AuthContext);
 
-	console.log('usuario loggeado:',user);
+	console.log('usuario loggeado:', user);
 
 	if (loading) {
 		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignContent: 'center'}}>
-				<ActivityIndicator size="large" />
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'center',
+					alignContent: 'center',
+				}}
+			>
+				<ActivityIndicator size='large' />
 			</View>
 		);
 	}
@@ -20,46 +32,60 @@ export function HomeScreen({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					{user == null ? (
-					<>
-						<Button
-						onPress={() => navigation.navigate('RegisterUser')}
-						btnBgColor={'#6892d5'}
-						btnText={'Registrar Usuario'}
-						/>
-					
-						<Button 
-							onPress={() => navigation.navigate('LoginUser')}
-							btnBgColor={'#6892d5'}
-							btnText={'Ingrese a su cuenta'}
-						/>
-					</>
-					):(
-					<>
-						<Button
-							onPress={() => navigation.navigate('RegisterChallenge')}
-							btnBgColor={'#6892d5'}
-							btnText={'Registro de retos'}
-						/>
-						<Button
-							onPress={() => navigation.navigate('ChallengesList')}
-							btnBgColor={'#6892d5'}
-							btnText={'Lista de retos'}
-						/>
-						<Button
-							onPress={() =>
-								navigation.navigate('RegisterRecyclableMaterials')
-							}
-							btnBgColor={'#6892d5'}
-							btnText={'Registrar materiales reciclables'}
-						/>
-						<Button
-							onPress={() => navigation.navigate('UserPanel')}
-							btnBgColor={'#6892d5'}
-							btnText={'Panel de usuario'}
-						/>
-					</>
-					) /*para mostrar diferentes botones si el usuario debe loggearse/registrarse o ya esta loggeado */}
+					{
+						user == null ? (
+							<>
+								<Button
+									onPress={() =>
+										navigation.navigate('RegisterUser')
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Registrar Usuario'}
+								/>
+
+								<Button
+									onPress={() =>
+										navigation.navigate('LoginUser')
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Ingrese a su cuenta'}
+								/>
+							</>
+						) : (
+							<>
+								<Button
+									onPress={() =>
+										navigation.navigate('RegisterChallenge')
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Registro de retos'}
+								/>
+								<Button
+									onPress={() =>
+										navigation.navigate('ChallengesList')
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Lista de retos'}
+								/>
+								<Button
+									onPress={() =>
+										navigation.navigate(
+											'RegisterRecyclableMaterials'
+										)
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Registrar materiales reciclables'}
+								/>
+								<Button
+									onPress={() =>
+										navigation.navigate('UserPanel')
+									}
+									btnBgColor={'#6892d5'}
+									btnText={'Panel de usuario'}
+								/>
+							</>
+						) /*para mostrar diferentes botones si el usuario debe loggearse/registrarse o ya esta loggeado */
+					}
 				</ScrollView>
 			</View>
 		</SafeAreaView>
