@@ -1,12 +1,12 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import SelectDropdown from 'react-native-select-dropdown';
-
-import { InputText } from '../../components/InputText';
-import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Controller, useForm } from 'react-hook-form';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export function RegisterChallenge({navigation}) {
+import { Button } from '../../components/Button';
+import { DropDown } from '../../components/DropDown';
+import { FormInputText } from '../../components/FormInputText';
+
+export function RegisterChallenge({ navigation }) {
 	const {
 		control,
 		handleSubmit,
@@ -17,164 +17,95 @@ export function RegisterChallenge({navigation}) {
 	console.log(watch());
 
 	const registerChallenge = async (challenge) => {
-		const extraInfo = {
-
-		}
+		const extraInfo = {};
 
 		const completeChallenge = {
-			challenge, extraInfo
-		}
-
-	}
+			challenge,
+			extraInfo,
+		};
+	};
 
 	const onSubmit = (data) => {
 		console.log(data);
-
-		
 	};
 
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					<Controller
+					<FormInputText
 						control={control}
-						name='nombreReto'
-						rules={{
-							required: 'El nombre es requerido',
-							pattern: {
-								value: /[A-Za-z0-9]+/,
-								message: 'Debe ingresar un nombre válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Nombre del Reto'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
-						/>
-						{errors.nombreReto && (
-							<Text style={styles.error}>{errors.nombreReto.message}</Text>
-						)}
+						controllerName='nombreReto'
+						requiredText='El nombre es requerido'
+						patternValue={/[A-Za-z0-9]+/}
+						patterMessage='Debe ingresar un nombre válido'
+						inputPlaceHolder='Nombre del Reto'
+						errors={errors}
+					/>
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='descripcion'
-						rules={{
-							required: 'La descripción es requerida',
-							pattern: {
-								value: /[A-Za-z0-9]+/,
-								message: 'Debe ingresar una descripción',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Descripción'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
-						/>
-						{errors.descripcion && (
-							<Text style={styles.error}>{errors.descripcion.message}</Text>
-						)}
+						controllerName='descripcion'
+						requiredText='La descripción es requerida'
+						patternValue={/[A-Za-z0-9]+/}
+						patterMessage='Debe ingresar una descripción válida'
+						inputPlaceHolder='Descripción'
+						errors={errors}
+					/>
 
+					{/* Falta crear componente de form para dropdown */}
 					<Controller
 						control={control}
-						name='categoria'
+						name='reto'
 						rules={{
-							required: 'La categoria es requerida'
+							required: 'El reto es requerido',
 						}}
-						render={({ field: { onChange, onBlur, value } }) => (
+						render={({ field: { onChange } }) => (
 							<>
-								<Text>Seleccione una Categoría:</Text>
-								<SelectDropdown
-									//data={[]}
-									onSelect={(selectedItem, index) => {
-										console.log(selectedItem, index)
-									}}
-									renderButton={(selectedItem, isOpened) => {
-										return (
-											<View> {/*Añadir estilos luego*/}
-												<Text>
-													{selectedItem && selectedItem.title || 'Selecciona '}
-												</Text>
-												<Icon name={isOpened ? 'chevron-up' : 'chevron-down'}/>
-											</View>
-										);
-									}}
-									renderItem={(item, isSelected) => {
-										return (
-											<View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-												<Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-												<Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-											</View>
-										);
-									}}
-									showsVerticalScrollIndicator={false}
+								<DropDown
+									data={[]}
+									dropDownPlaceholder='Seleccione el tipo de reto'
+									onChange={onChange}
 								/>
 							</>
 						)}
-						/>
+					/>
+					{errors.reto && (
+						<Text style={styles.error}>{errors.reto.message}</Text>
+					)}
 
-					<Controller
+					{/* Actualizar a un DatePicker */}
+					<FormInputText
 						control={control}
-						name='fechaLimite'
-						defaultValue={Date.now()}
-						rules={{
-							required: 'Una fecha es requerida'
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							//Usar DatePicker?
-							<InputText 
-								placeholder='Fecha limite'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value} 
-							/>
-						)}
-						/>
-						
+						controllerName='fechaLimite'
+						requiredText='Una fecha es requerida'
+						inputPlaceHolder='Fecha limite'
+						errors={errors}
+					/>
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='puntaje'
-						rules={{
-							required: 'El puntaje es requerido',
-							pattern: {
-								value: /^[0-9]+$/,
-								message: "Debe ingresar el puntaje del reto"
-							}
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText 
-								placeholder='Puntaje'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value} 
-							/>
-						)}
-						/>
-						{errors.puntaje && (
-							<Text style={styles.error}>{errors.puntaje.message}</Text>
-						)}
+						controllerName='puntaje'
+						requiredText='El puntaje es requerido'
+						patternValue={/^[0-9]+$/}
+						patterMessage='Debe ingresar el puntaje del reto'
+						inputPlaceHolder='Puntaje'
+						errors={errors}
+					/>
 
-						<Button
-							btnBgColor='#6892d5'
-							onPress={handleSubmit(onSubmit)}
-							btnText='Ingresar'
-						/>
+					<Button
+						btnBgColor='#6892d5'
+						onPress={handleSubmit(onSubmit)}
+						btnText='Ingresar'
+					/>
 				</ScrollView>
 			</View>
 		</SafeAreaView>
 	);
 }
 
-export const styles = StyleSheet.create({ //edit stylesheet
+export const styles = StyleSheet.create({
+	//edit stylesheet
 	safeAreaView: {
 		flex: 1,
 	},

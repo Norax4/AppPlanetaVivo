@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, Form, useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { DropDown } from '../../components/DropDown';
 import { Alert } from 'react-native';
 import { Button } from '../../components/Button';
-import { InputText } from '../../components/InputText';
+import { DropDown } from '../../components/DropDown';
+import { FormInputText } from '../../components/FormInputText';
 import { categoriasMateriales } from '../../database/categories';
 
 export function RegisterRecMats({ navigation }) {
@@ -40,30 +40,15 @@ export function RegisterRecMats({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					<Controller
+					<FormInputText
 						control={control}
-						name='nombreMaterial'
-						rules={{
-							required: 'El nombre es requerido',
-							pattern: {
-								value: /[A-Za-z]+/,
-								message: 'Debe ingresar un nombre válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Nombre del Material'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='nombreMaterial'
+						requiredText='El nombre es requerido'
+						patternValue={/[A-Za-z]+/}
+						patterMessage='Debe ingresar un nombre válido'
+						inputPlaceHolder='Nombre del Material'
+						errors={errors}
 					/>
-					{errors.nombreMaterial && (
-						<Text style={styles.error}>
-							{errors.nombreMaterial.message}
-						</Text>
-					)}
 
 					<Controller
 						control={control}
@@ -75,6 +60,7 @@ export function RegisterRecMats({ navigation }) {
 							<>
 								<DropDown
 									data={categoriasMateriales}
+									dropDownPlaceholder='Seleccione la categoría'
 									onChange={onChange}
 								/>
 							</>
@@ -85,9 +71,7 @@ export function RegisterRecMats({ navigation }) {
 							{errors.categoria.message}
 						</Text>
 					)}
-
 					{/* Usar image picker para insertar una imagen */}
-
 					<Button
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}

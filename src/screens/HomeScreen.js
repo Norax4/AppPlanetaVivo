@@ -12,8 +12,6 @@ import { AuthContext } from '../database/authContext';
 export function HomeScreen({ navigation }) {
 	const { user, loading, logout } = useContext(AuthContext);
 
-	//logout();
-
 	if (loading) {
 		return (
 			<View
@@ -77,6 +75,11 @@ export function HomeScreen({ navigation }) {
 								onPress={() => navigation.navigate('UserPanel')}
 								btnBgColor={'#6892d5'}
 								btnText={'Panel de usuario'}
+							/>
+							<Button
+								onPress={() => logout()}
+								btnBgColor={'#ff8c94'}
+								btnText={'Cerrar sesión'}
 							/>
 						</>
 					)}

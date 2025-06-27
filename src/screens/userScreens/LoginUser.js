@@ -1,17 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
 	Alert,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
-	Text,
 	View,
 } from 'react-native';
 
 import { Button } from '../../components/Button';
-import { InputText } from '../../components/InputText';
+import { FormInputText } from '../../components/FormInputText';
 import { AuthContext } from '../../database/authContext';
 
 export function LoginUser({ navigation }) {
@@ -56,55 +54,26 @@ export function LoginUser({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					<Controller
+					<FormInputText
 						control={control}
-						name='email'
-						rules={{
-							required: 'El email es requerido',
-							pattern: {
-								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-								message: 'Debe ingresar un email válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Email'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='email'
+						requiredText='El email es requerido'
+						patternValue={
+							/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+						}
+						patterMessage='Debe ingresar un email válido'
+						inputPlaceHolder='Email'
+						errors={errors}
 					/>
-					{errors.email && (
-						<Text style={styles.error}>{errors.email.message}</Text>
-					)}
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='contrasenia'
-						rules={{
-							required: 'Contraseña requerida',
-							pattern: {
-								value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-								message:
-									'La contraseña debe contener al menos ocho caracteres, una mayúscula, una minúscula y un número',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Contraseña'
-								secureTextEntry={true}
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='contrasenia'
+						requiredText='Contraseña requerida'
+						inputPlaceHolder='Contraseña'
+						errors={errors}
+						secureTextEntry={true}
 					/>
-					{errors.contrasenia && (
-						<Text style={styles.error}>
-							{errors.contrasenia.message}
-						</Text>
-					)}
 
 					<Button
 						btnBgColor='#6892d5'

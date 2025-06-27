@@ -2,11 +2,11 @@ import { StyleSheet, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import SelectDropdown from 'react-native-select-dropdown';
 
-export function DropDown({ data, onChange }) {
+export function DropDown({ data, onChange, dropDownPlaceholder }) {
 	return (
 		<SelectDropdown
 			data={data}
-			defaultButtonText={'Seleccione la categoría'}
+			defaultButtonText={dropDownPlaceholder}
 			onSelect={(selectedItem) => {
 				onChange(selectedItem.title);
 			}}
@@ -21,7 +21,7 @@ export function DropDown({ data, onChange }) {
 					<View style={styles.dropdownButtonStyle}>
 						<Text style={styles.dropdownButtonTxtStyle}>
 							{(selectedItem && selectedItem.title) ||
-								'Seleccione la categoría'}
+								dropDownPlaceholder}
 						</Text>
 						<FontAwesome
 							name={isOpened ? 'chevron-up' : 'chevron-down'}
@@ -36,7 +36,7 @@ export function DropDown({ data, onChange }) {
 						style={{
 							...styles.dropdownItemStyle,
 							...(isSelected && {
-								backgroundColor: '#D2D9DF',
+								backgroundColor: '#fff',
 							}),
 						}}
 					>
