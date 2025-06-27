@@ -4,7 +4,9 @@ import { Button } from '../components/Button';
 import { AuthContext } from '../database/authContext';
 
 export function HomeScreen({ navigation }) {
-	const { user, loading } = useContext(AuthContext);
+	const { user, loading , logout} = useContext(AuthContext);
+
+	//logout();
 
 	console.log('usuario loggeado:',user);
 

@@ -14,22 +14,27 @@ export function ChallengesList({navigation}) {
         
     }, [])
 
-    const listItemView = (item) => {
+    const Item = (object) => {
         <View>
-            <Text>
-                <Button title="Participar" 
-                onPress={() => navigation.navigate('SelectedChallenge', {item})}/>
-            </Text>
+            <Button btnText={object.nombreReto} 
+            //btnBgColor = ??
+            onPress={() => navigation.navigate('SelectedChallenge', {object})}/>
         </View>
     }
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
-            <View>
-                <View>
-                    <FlatList 
-                    
-                    />
+            <View style={styles.view}>
+                <View style={styles.view}>
+                    {challenges <= 0 ? (
+                        <Text> No hay retos actualmente. </Text>
+                    ): (
+                        <FlatList 
+                        data = {challenges}
+                        renderItem={({item}) => <Item object={item}/>}
+                        keyExtractor={item => item.id}
+                        />
+                    )}
                 </View>
             </View>
         </SafeAreaView>

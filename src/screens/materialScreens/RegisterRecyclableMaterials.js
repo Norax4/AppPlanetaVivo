@@ -6,6 +6,8 @@ import { InputText } from '../../components/InputText';
 import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
+import { categoriasMat } from '../../database/categories';
+import { Alert } from 'react-native';
 
 export function RegisterRecMats({navigation}) {
 	const {
@@ -17,8 +19,25 @@ export function RegisterRecMats({navigation}) {
 
 	console.log(watch());
 
-	const onSubmit = (data) => {
+	const registerMaterial = async (data) => {
+
+	}
+
+	const onSubmit = async (data) => {
 		console.log(data);
+
+		try {
+			await registerMaterial(data);
+
+			Alert.alert("Exito", "Material registrado exitosamente");
+		} catch (err) {
+			console.error(err);
+			Alert.alert(
+				'Error',
+				err.message || 'No se pudo registrar el usuario.',
+				[{ text: 'OK' }]
+			);
+		}
 		
 	};
 
@@ -59,7 +78,7 @@ export function RegisterRecMats({navigation}) {
 							<>
 								<Text>Seleccione una Categoría:</Text>
 								<SelectDropdown
-									//data={[]} //Array de categorias
+									data={categoriasMat} //Array de categorias
 									onSelect={(selectedItem, index) => {
 										console.log(selectedItem, index)
 									}}
@@ -87,7 +106,7 @@ export function RegisterRecMats({navigation}) {
 						)}
 						/>
 
-					
+						{/* Usar image picker para insertar una imagen */}
 
 						<Button
 							btnBgColor='#6892d5'

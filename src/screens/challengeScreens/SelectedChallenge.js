@@ -33,7 +33,7 @@ export function SelectedChallenge({route, navigation}) {
         <SafeAreaView>
             <View>
                 <ScrollView>
-                    {/*Insert something.*/}
+                    
                 </ScrollView>
             </View>
         </SafeAreaView>
