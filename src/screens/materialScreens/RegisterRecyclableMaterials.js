@@ -3,13 +3,20 @@ import { useForm, Controller } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
 
 import { InputText } from '../../components/InputText';
+import  Icon  from 'react-native-vector-icons/FontAwesome'
 import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
 import { categoriasMat } from '../../database/categories';
 import { Alert } from 'react-native';
+import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
 
 export function RegisterRecMats({navigation}) {
+	const { user } = useContext(AuthContext);
+
+	console.log('usuario:', user);
+
 	const {
 		control,
 		handleSubmit,
@@ -19,8 +26,24 @@ export function RegisterRecMats({navigation}) {
 
 	console.log(watch());
 
-	const registerMaterial = async (data) => {
+	const registerMaterial = async (material) => {
+		const existe = await AsyncStorage.getItem(material.nombreMaterial.toLowerCase());
+		if (existe) throw new Error('El material ya existe');
 
+		const extraInfo = {
+			usuario: {nombreUser: user.nombreUser, email: user.email}
+		}
+
+		const completeMaterial = {
+			...material,
+			...extraInfo
+		}
+
+		console.log(completeMaterial);
+
+		await AsyncStorage.setItem(material.nombreMaterial, JSON.Stringify(completeMaterial));
+
+		return {ok: true} //?
 	}
 
 	const onSubmit = async (data) => {
@@ -68,41 +91,38 @@ export function RegisterRecMats({navigation}) {
 							<Text style={styles.error}>{errors.nombreMaterial.message}</Text>
 						)}
 
+					<Text>Seleccione una Categoría:</Text>
 					<Controller
 						control={control}
 						name='categoria'
 						rules={{
 							required: 'La categoria es requerida',
 						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<>
-								<Text>Seleccione una Categoría:</Text>
+						render={({ field: { onChange, value } }) => (
 								<SelectDropdown
 									data={categoriasMat} //Array de categorias
-									onSelect={(selectedItem, index) => {
-										console.log(selectedItem, index)
+									onSelect={(selectedItem) => {
+										onChange(selectedItem)
 									}}
+									defaultValue={value}
 									renderButton={(selectedItem, isOpened) => {
 										return (
 											<View> {/*Añadir estilos luego*/}
 												<Text>
-													{selectedItem && selectedItem.title || 'Selecciona '}
+													{selectedItem || 'Selecciona '}
 												</Text>
 												<Icon name={isOpened ? 'chevron-up' : 'chevron-down'}/>
 											</View>
 										);
 									}}
-									renderItem={(item, isSelected) => {
+									renderItem={(item) => {
 										return (
-											<View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-												<Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-												<Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+											<View>
+												<Text>{item}</Text>
 											</View>
 										);
 									}}
-									showsVerticalScrollIndicator={false}
 								/>
-							</>
 						)}
 						/>
 

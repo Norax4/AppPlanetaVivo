@@ -1,22 +1,46 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, ScrollView, Text, FlatList} from 'react-native';
 
 import { Button } from '../../components/Button';
 import { useEffect, useState } from 'react';
-import { FlatList } from 'react-native-gesture-handler';
-import { fetchAllChallenges } from '../../database/fetchFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function ChallengesList({ navigation }) {
 	const [challenges, setChallenges] = useState([]);
 
 	useEffect(() => {
-		fetchAllChallenges(); //manejar setting de la lista
+		const fetchAllChallenges = async () => {
+            try{
+                const keys = await AsyncStorage.getAllKeys();
+                const data = await AsyncStorage.multiGet(keys);
+                const challengesList = data.map(([key, value]) => {
+                    try {
+                        return JSON.parse(value);
+                        } catch (e) {
+                        // Si no es un JSON válido, se ignora
+                        return null;
+                        }
+                    })
+                    .filter(item => item && item.nombreReto);
+                
+                    console.log(challengesList);
+                if (challengesList.length > 0) {
+                    setChallenges(challengesList);
+                }
+            }catch(error){
+                console.log('Error al conseguir usuarios', error);
+                return error;
+            }
+        };
+        fetchAllChallenges()
 	}, []);
 
     const Item = (object) => {
-        <View>
-            <Button btnText={object.nombreReto} 
-            //btnBgColor = ??
-            onPress={() => navigation.navigate('SelectedChallenge', {object})}/>
+        <View key={object.nombreReto} style={styles.itemView} >
+            <Text>{object.nombreReto}</Text>
+            {/*<Button 
+            onPress={() => navigation.navigate('SelectedChallenge', {object})}
+            btnText={object.nombreReto} 
+            btnBgColor = '#6892d5'/>*/}
         </View>
     }
 
@@ -28,8 +52,9 @@ export function ChallengesList({ navigation }) {
                         <Text> No hay retos actualmente. </Text>
                     ): (
                         <FlatList 
+                        contentContainerStyle={{paddingHorizontal: 20}}
                         data = {challenges}
-                        renderItem={({item}) => <Item object={item}/>}
+                        renderItem={({item}) => Item(item)}
                         keyExtractor={item => item.id}
                         />
                     )}
@@ -57,4 +82,10 @@ const styles = StyleSheet.create({
 		fontWeight: 650,
 		fontSize: 16,
 	},
+    itemView: {
+      backgroundColor: "white",
+      margin: 5,
+      padding: 10,
+      borderRadius: 10,
+    }
 });

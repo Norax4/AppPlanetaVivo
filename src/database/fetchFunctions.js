@@ -31,11 +31,7 @@ export async function fetchAllChallenges() {
             }
         });
         console.log(challenges);
-        /*if (challenges.length > 0){
-            return {ok: true, content: challenges};
-        } else {
-            return {ok: false, content: "¡No hay retos en este momento!"};
-        }*/
+        
     }catch(error){
         console.log('Error al conseguir usuarios', error);
         return error;

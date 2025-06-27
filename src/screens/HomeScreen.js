@@ -12,6 +12,8 @@ import { AuthContext } from '../database/authContext';
 export function HomeScreen({ navigation }) {
 	const { user, loading, logout } = useContext(AuthContext);
 
+	console.log('logged user:', user);
+
 	if (loading) {
 		return (
 			<View

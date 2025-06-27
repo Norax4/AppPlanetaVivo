@@ -3,33 +3,70 @@ import { useForm, Controller } from 'react-hook-form';
 import SelectDropdown from 'react-native-select-dropdown';
 
 import { InputText } from '../../components/InputText';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
+import { Alert } from 'react-native';
+import { categoriasMat } from '../../database/categories';
 
 export function RegisterChallenge({navigation}) {
+	const {user} = useContext(AuthContext);
+
+	console.log('usuario:',user);
+
 	const {
 		control,
 		handleSubmit,
 		watch,
 		formState: { errors },
-	} = useForm();
-
+	} = useForm(/*{
+		defaultValues: {
+			nombreReto: '',
+			descripcion: '',
+			categoria: '',
+			fechaLimite: '',
+			puntaje: ''
+		}
+	}*/);
+	
 	console.log(watch());
 
 	const registerChallenge = async (challenge) => {
-		const extraInfo = {
+		const existe = await AsyncStorage.getItem(challenge.nombreReto.toLowerCase());
+		if (existe) throw new Error('El reto ya existe');
 
+		const extraInfo = {
+			usuario: {nombreUser: user.nombreUser, email: user.email}
 		}
 
 		const completeChallenge = {
-			challenge, extraInfo
+			...challenge, ...extraInfo
 		}
 
+		await AsyncStorage.setItem(challenge.nombreReto, JSON.stringify(completeChallenge));
+
+		return {ok: true};
 	}
 
-	const onSubmit = (data) => {
+	const onSubmit = async (data) => {
 		console.log(data);
 
+		try {
+			await registerChallenge(data)
+
+			Alert.alert("Exito", "Reto registrado exitosamente",
+				[{text: 'OK', onPress: () => navigation.navigate('HomeScreen')}]
+			);
+		} catch (err) {
+			console.error(err);
+			Alert.alert(
+				'Error',
+				err.message || 'No se pudo registrar el reto.',
+				[{ text: 'OK' }]
+			);
+		}
 		
 	};
 
@@ -83,48 +120,45 @@ export function RegisterChallenge({navigation}) {
 							<Text style={styles.error}>{errors.descripcion.message}</Text>
 						)}
 
+					<Text>Seleccione una Categoría:</Text>
 					<Controller
 						control={control}
 						name='categoria'
 						rules={{
-							required: 'La categoria es requerida'
+							required: 'La categoria es requerida',
 						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<>
-								<Text>Seleccione una Categoría:</Text>
+						render={({ field: { onChange, value } }) => (
 								<SelectDropdown
-									//data={[]}
-									onSelect={(selectedItem, index) => {
-										console.log(selectedItem, index)
+									data={categoriasMat} //Array de categorias
+									onSelect={(selectedItem) => {
+										onChange(selectedItem)
 									}}
+									defaultValue={value}
 									renderButton={(selectedItem, isOpened) => {
 										return (
 											<View> {/*Añadir estilos luego*/}
 												<Text>
-													{selectedItem && selectedItem.title || 'Selecciona '}
+													{selectedItem || 'Selecciona '}
 												</Text>
 												<Icon name={isOpened ? 'chevron-up' : 'chevron-down'}/>
 											</View>
 										);
 									}}
-									renderItem={(item, isSelected) => {
-										return (
-											<View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-												<Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-												<Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-											</View>
-										);
-									}}
-									showsVerticalScrollIndicator={false}
-								/>
-							</>
+								renderItem={(item) => {
+									return (
+										<View>
+											<Text>{item}</Text>
+										</View>
+									);
+								}}
+							/>
 						)}
 						/>
 
 					<Controller
 						control={control}
 						name='fechaLimite'
-						defaultValue={Date.now()}
+						//defaultValue={Date.now()}
 						rules={{
 							required: 'Una fecha es requerida'
 						}}
@@ -147,7 +181,9 @@ export function RegisterChallenge({navigation}) {
 							required: 'El puntaje es requerido',
 							pattern: {
 								value: /^[0-9]+$/,
-								message: "Debe ingresar el puntaje del reto"
+								message: "Debe ingresar el puntaje del reto",
+								min: 20,
+								max: 70
 							}
 						}}
 						render={({ field: { onChange, onBlur, value } }) => (
