@@ -27,8 +27,6 @@ export function LoginUser({ navigation }) {
 		const response = await login(data.email, data.contrasenia);
 
 		if (response.ok) {
-			AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
-
 			Alert.alert(
 				'Exito',
 				response.message,
