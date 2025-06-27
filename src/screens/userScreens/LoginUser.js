@@ -1,45 +1,72 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import { useContext } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import {
+	Alert,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
 
-import { InputText } from '../../components/InputText';
 import { Button } from '../../components/Button';
-import { Alert } from 'react-native';
-import { useContext } from 'react';
-import { AuthContext } from '../../database/authContext';
+import { InputText } from '../../components/InputText';
+//import { AuthContext } from '../../database/authContext';
 
-export function LoginUser({navigation}){
-	const {login} = useContext(AuthContext);
+export function LoginUser({ navigation }) {
+	//const { login } = useContext(AuthContext);
 
-    const {
+	const {
 		control,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm();
 
-    console.log(watch());
+	const login = async (email) => {
+		return await AsyncStorage.getItem(email);
+	};
 
-    const onSubmit = (data) => {
-		const response = login(data.email, data.contrasenia); //Funcion login del contexto de la aplicación (AuthContext)
-		let message = response.message;
-		if (response.ok) {
-			Alert.alert("Exito", {message}, 
-			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-			{ cancelable: false });
-		} else if (!response.ok && response.message === "Usted ya esta loggeado a la app.") {
-			Alert.alert("Error", {message}, 
-			[{text: "OK", onPress: () => navigation.navigate("HomeScreen")}], 
-			{ cancelable: false });
+	const onSubmit = async (data) => {
+		//const response = login(data.email, data.contrasenia);
+		const userToLogPromise = await login(data.email.toLowerCase());
+		const userToLog = JSON.parse(userToLogPromise);
+
+		console.log(userToLog.contrasenia, data.contrasenia);
+
+		if (userToLog.contrasenia === data.contrasenia) {
+			AsyncStorage.setItem('loggedUser', JSON.stringify(userToLog));
+
+			Alert.alert(
+				'Exito',
+				'logueado de forma exitosa',
+				[
+					{
+						ext: 'OK',
+						onPress: () => navigation.navigate('HomeScreen'),
+					},
+				],
+				{ cancelable: false }
+			);
 		} else {
-			Alert.alert("Error", {message});
+			Alert.alert(
+				'Error',
+				'usuario o contraseña incorrectos',
+				[
+					{
+						text: 'OK',
+					},
+				],
+				{ cancelable: false }
+			);
 		}
-	}
+	};
 
-    return(
-        <SafeAreaView style={styles.safeAreaView}>
-            <View style={styles.view}>
-                <ScrollView style={styles.scrollView}>
-                    <Controller
+	return (
+		<SafeAreaView style={styles.safeAreaView}>
+			<View style={styles.view}>
+				<ScrollView style={styles.scrollView}>
+					<Controller
 						control={control}
 						name='email'
 						rules={{
@@ -57,47 +84,47 @@ export function LoginUser({navigation}){
 								value={value}
 							/>
 						)}
-						/>
-						{errors.email && (
-							<Text style={styles.error}>{errors.email.message}</Text>
-						)}
+					/>
+					{errors.email && (
+						<Text style={styles.error}>{errors.email.message}</Text>
+					)}
 
-						<Controller
-							control={control}
-							name='contrasenia'
-							rules={{
-								required: 'Contraseña requerida',
-								pattern: {
-									value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-									message:
+					<Controller
+						control={control}
+						name='contrasenia'
+						rules={{
+							required: 'Contraseña requerida',
+							pattern: {
+								value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+								message:
 									'La contraseña debe contener al menos ocho caracteres, una mayúscula, una minúscula y un número',
-								},
-							}}
-							render={({ field: { onChange, onBlur, value } }) => (
-								<InputText
-									placeholder='Contraseña'
-									secureTextEntry={true}
-									onChange={(text) => onChange(text)}
-									onBlur={onBlur}
-									value={value}
-								/>
-							)}
+							},
+						}}
+						render={({ field: { onChange, onBlur, value } }) => (
+							<InputText
+								placeholder='Contraseña'
+								secureTextEntry={true}
+								onChange={(text) => onChange(text)}
+								onBlur={onBlur}
+								value={value}
 							/>
-							{errors.contrasenia && (
-							<Text style={styles.error}>
-								{errors.contrasenia.message}
-							</Text>
-							)}
+						)}
+					/>
+					{errors.contrasenia && (
+						<Text style={styles.error}>
+							{errors.contrasenia.message}
+						</Text>
+					)}
 
-                    <Button
+					<Button
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
 						btnText='Ingresar'
 					/>
-                </ScrollView>
-            </View>
-        </SafeAreaView>
-    );
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({

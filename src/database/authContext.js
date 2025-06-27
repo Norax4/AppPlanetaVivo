@@ -35,7 +35,8 @@ export const AuthProvider = ({ children }) => {
 
 			if (userToLog != null) {
 				if (userToLog.password === password) {
-					setUser(JSON.parse(userToLog)); //Revisar que datos guardar
+					setUser(userToLog);
+					console.log('userToLog es: ', userToLog);
 					AsyncStorage.setItem(
 						'loggedUser',
 						JSON.stringify(userToLog)
