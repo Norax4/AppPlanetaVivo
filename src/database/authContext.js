@@ -30,12 +30,14 @@ export const AuthProvider = ({ children }) => {
 			//Si ya hay un usuario loggeado automaticamente
 			return { ok: false, message: 'Usted ya esta loggeado a la app.' };
 		} else {
-			const userString = await AsyncStorage.getItem(email);
-			const userToLog = JSON.parse(userString);
+			const userPromise = await AsyncStorage.getItem(email);
+			const userToLog = JSON.parse(userPromise);
 
 			if (userToLog != null) {
-				if (userToLog.password === password) {
-					setUser(JSON.parse(userToLog)); //Revisar que datos guardar
+				console.log('userToLog es: ', userToLog);
+
+				if (userToLog.contrasenia === password) {
+					setUser(userToLog);
 					AsyncStorage.setItem(
 						'loggedUser',
 						JSON.stringify(userToLog)
@@ -67,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
 	return (
 		<AuthContext.Provider value={{ user, login, logout, loading }}>
-			{children}{' '}
+			{children}
 			{/*Todos los componentes dentro de AuthProvider, ver App.js*/}
 		</AuthContext.Provider>
 	);

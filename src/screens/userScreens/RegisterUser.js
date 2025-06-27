@@ -17,14 +17,11 @@ export function RegisterUser({ navigation }) {
 		control,
 		handleSubmit,
 		getValues,
-		watch,
 		formState: { errors },
 	} = useForm();
 
-	//console.log(watch());
-
 	const registerUser = async (regUser) => {
-		const existe = await AsyncStorage.getItem(regUser.email);
+		const existe = await AsyncStorage.getItem(regUser.email.toLowerCase());
 		if (existe) throw new Error('Usuario ya existe');
 
 		const extraInfo = {
@@ -38,7 +35,6 @@ export function RegisterUser({ navigation }) {
 
 		await AsyncStorage.setItem(regUser.email, JSON.stringify(completeUser));
 
-		// assuming login throws if it fails
 		return await login(regUser.email, regUser.contrasenia);
 	};
 

@@ -5,14 +5,12 @@ import { useEffect, useState } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { fetchAllChallenges } from '../../database/fetchFunctions';
 
-export function ChallengesList({navigation}) {
-    
-    const [challenges, setChallenges]= useState([]);
+export function ChallengesList({ navigation }) {
+	const [challenges, setChallenges] = useState([]);
 
-    useEffect(() =>{
-        fetchAllChallenges(); //manejar setting de la lista
-        
-    }, [])
+	useEffect(() => {
+		fetchAllChallenges(); //manejar setting de la lista
+	}, []);
 
     const Item = (object) => {
         <View>
