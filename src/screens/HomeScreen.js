@@ -30,60 +30,54 @@ export function HomeScreen({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					{
-						user == null ? (
-							<>
-								<Button
-									onPress={() =>
-										navigation.navigate('RegisterUser')
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Registrar Usuario'}
-								/>
+					{user == null ? (
+						<>
+							<Button
+								onPress={() =>
+									navigation.navigate('RegisterUser')
+								}
+								btnBgColor={'#6892d5'}
+								btnText={'Registrar Usuario'}
+							/>
 
-								<Button
-									onPress={() =>
-										navigation.navigate('LoginUser')
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Ingrese a su cuenta'}
-								/>
-							</>
-						) : (
-							<>
-								<Button
-									onPress={() =>
-										navigation.navigate('RegisterChallenge')
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Registro de retos'}
-								/>
-								<Button
-									onPress={() =>
-										navigation.navigate('ChallengesList')
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Lista de retos'}
-								/>
-								<Button
-									onPress={() =>
-										navigation.navigate(
-											'RegisterRecyclableMaterials'
-										)
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Registrar materiales reciclables'}
-								/>
-								<Button
-									onPress={() =>
-										navigation.navigate('UserPanel')
-									}
-									btnBgColor={'#6892d5'}
-									btnText={'Panel de usuario'}
-								/>
-							</>
-						) /*para mostrar diferentes botones si el usuario debe loggearse/registrarse o ya esta loggeado */
-					}
+							<Button
+								onPress={() => navigation.navigate('LoginUser')}
+								btnBgColor={'#6892d5'}
+								btnText={'Ingrese a su cuenta'}
+							/>
+						</>
+					) : (
+						<>
+							<Button
+								onPress={() =>
+									navigation.navigate('RegisterChallenge')
+								}
+								btnBgColor={'#6892d5'}
+								btnText={'Registro de retos'}
+							/>
+							<Button
+								onPress={() =>
+									navigation.navigate('ChallengesList')
+								}
+								btnBgColor={'#6892d5'}
+								btnText={'Lista de retos'}
+							/>
+							<Button
+								onPress={() =>
+									navigation.navigate(
+										'RegisterRecyclableMaterials'
+									)
+								}
+								btnBgColor={'#6892d5'}
+								btnText={'Registrar materiales reciclables'}
+							/>
+							<Button
+								onPress={() => navigation.navigate('UserPanel')}
+								btnBgColor={'#6892d5'}
+								btnText={'Panel de usuario'}
+							/>
+						</>
+					)}
 				</ScrollView>
 			</View>
 		</SafeAreaView>

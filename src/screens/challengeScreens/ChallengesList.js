@@ -5,35 +5,35 @@ import { useEffect, useState } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { fetchAllChallenges } from '../../database/fetchFunctions';
 
-export function ChallengesList({navigation}) {
-    
-    const [challenges, setChallenges]= useState([]);
+export function ChallengesList({ navigation }) {
+	const [challenges, setChallenges] = useState([]);
 
-    useEffect(() =>{
-        fetchAllChallenges(); //manejar setting de la lista
-        
-    }, [])
+	useEffect(() => {
+		fetchAllChallenges(); //manejar setting de la lista
+	}, []);
 
-    const listItemView = (item) => {
-        <View>
-            <Text>
-                <Button title="Participar" 
-                onPress={() => navigation.navigate('SelectedChallenge', {item})}/>
-            </Text>
-        </View>
-    }
+	const listItemView = (item) => {
+		<View>
+			<Text>
+				<Button
+					title='Participar'
+					onPress={() =>
+						navigation.navigate('SelectedChallenge', { item })
+					}
+				/>
+			</Text>
+		</View>;
+	};
 
-    return (
-        <SafeAreaView style={styles.safeAreaView}>
-            <View>
-                <View>
-                    <FlatList 
-                    
-                    />
-                </View>
-            </View>
-        </SafeAreaView>
-    );
+	return (
+		<SafeAreaView style={styles.safeAreaView}>
+			<View>
+				<View>
+					<FlatList />
+				</View>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
