@@ -1,35 +1,31 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import * as ImagePicker from 'expo-image-picker';
-
-import { InputText } from '../../components/InputText';
-import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SelectDropdown from 'react-native-select-dropdown';
-import { categoriasMat } from '../../database/categories';
-import { Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Controller, useForm } from 'react-hook-form';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export function RegisterRecMats({navigation}) {
+import { DropDown } from '../../components/DropDown';
+import { Alert } from 'react-native';
+import { Button } from '../../components/Button';
+import { InputText } from '../../components/InputText';
+import { categoriasMateriales } from '../../database/categories';
+
+export function RegisterRecMats({ navigation }) {
 	const {
 		control,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm();
 
-	console.log(watch());
-
-	const registerMaterial = async (data) => {
-
-	}
+	const registerMaterial = async (data) => {};
 
 	const onSubmit = async (data) => {
+		console.log('click en ingresar');
 		console.log(data);
 
 		try {
 			await registerMaterial(data);
 
-			Alert.alert("Exito", "Material registrado exitosamente");
+			Alert.alert('Exito', 'Material registrado exitosamente');
 		} catch (err) {
 			console.error(err);
 			Alert.alert(
@@ -38,14 +34,13 @@ export function RegisterRecMats({navigation}) {
 				[{ text: 'OK' }]
 			);
 		}
-		
 	};
 
-    return (
-        <SafeAreaView style={styles.safeAreaView}>
-            <View style={styles.view}>
-                <ScrollView style={styles.scrollView}>
-                    <Controller
+	return (
+		<SafeAreaView style={styles.safeAreaView}>
+			<View style={styles.view}>
+				<ScrollView style={styles.scrollView}>
+					<Controller
 						control={control}
 						name='nombreMaterial'
 						rules={{
@@ -63,10 +58,12 @@ export function RegisterRecMats({navigation}) {
 								value={value}
 							/>
 						)}
-						/>
-						{errors.nombreMaterial && (
-							<Text style={styles.error}>{errors.nombreMaterial.message}</Text>
-						)}
+					/>
+					{errors.nombreMaterial && (
+						<Text style={styles.error}>
+							{errors.nombreMaterial.message}
+						</Text>
+					)}
 
 					<Controller
 						control={control}
@@ -74,49 +71,32 @@ export function RegisterRecMats({navigation}) {
 						rules={{
 							required: 'La categoria es requerida',
 						}}
-						render={({ field: { onChange, onBlur, value } }) => (
+						render={({ field: { onChange } }) => (
 							<>
-								<Text>Seleccione una Categoría:</Text>
-								<SelectDropdown
-									data={categoriasMat} //Array de categorias
-									onSelect={(selectedItem, index) => {
-										console.log(selectedItem, index)
-									}}
-									renderButton={(selectedItem, isOpened) => {
-										return (
-											<View> {/*Añadir estilos luego*/}
-												<Text>
-													{selectedItem && selectedItem.title || 'Selecciona '}
-												</Text>
-												<Icon name={isOpened ? 'chevron-up' : 'chevron-down'}/>
-											</View>
-										);
-									}}
-									renderItem={(item, isSelected) => {
-										return (
-											<View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-												<Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-												<Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-											</View>
-										);
-									}}
-									showsVerticalScrollIndicator={false}
+								<DropDown
+									data={categoriasMateriales}
+									onChange={onChange}
 								/>
 							</>
 						)}
-						/>
+					/>
+					{errors.categoria && (
+						<Text style={styles.error}>
+							{errors.categoria.message}
+						</Text>
+					)}
 
-						{/* Usar image picker para insertar una imagen */}
+					{/* Usar image picker para insertar una imagen */}
 
-						<Button
-							btnBgColor='#6892d5'
-							onPress={handleSubmit(onSubmit)}
-							btnText='Ingresar'
-						/>
-                </ScrollView>
-            </View>
-        </SafeAreaView>
-    );
+					<Button
+						btnBgColor='#6892d5'
+						onPress={handleSubmit(onSubmit)}
+						btnText='Ingresar'
+					/>
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
