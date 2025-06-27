@@ -1,16 +1,13 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import * as ImagePicker from 'expo-image-picker';
-
-import { InputText } from '../../components/InputText';
-import  Icon  from 'react-native-vector-icons/FontAwesome'
-import { Button } from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SelectDropdown from 'react-native-select-dropdown';
-import { categoriasMat } from '../../database/categories';
+import * as ImagePicker from 'expo-image-picker';
+import { Controller, useForm } from 'react-hook-form';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+
 import { Alert } from 'react-native';
-import { useContext } from 'react';
-import { AuthContext } from '../../database/authContext';
+import { Button } from '../../components/Button';
+import { DropDown } from '../../components/DropDown';
+import { FormInputText } from '../../components/FormInputText';
+import { categoriasMateriales } from '../../database/categories';
 
 export function RegisterRecMats({navigation}) {
 	const { user } = useContext(AuthContext);
@@ -20,7 +17,6 @@ export function RegisterRecMats({navigation}) {
 	const {
 		control,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm();
 
@@ -47,12 +43,13 @@ export function RegisterRecMats({navigation}) {
 	}
 
 	const onSubmit = async (data) => {
+		console.log('click en ingresar');
 		console.log(data);
 
 		try {
 			await registerMaterial(data);
 
-			Alert.alert("Exito", "Material registrado exitosamente");
+			Alert.alert('Exito', 'Material registrado exitosamente');
 		} catch (err) {
 			console.error(err);
 			Alert.alert(
@@ -61,35 +58,21 @@ export function RegisterRecMats({navigation}) {
 				[{ text: 'OK' }]
 			);
 		}
-		
 	};
 
-    return (
-        <SafeAreaView style={styles.safeAreaView}>
-            <View style={styles.view}>
-                <ScrollView style={styles.scrollView}>
-                    <Controller
+	return (
+		<SafeAreaView style={styles.safeAreaView}>
+			<View style={styles.view}>
+				<ScrollView style={styles.scrollView}>
+					<FormInputText
 						control={control}
-						name='nombreMaterial'
-						rules={{
-							required: 'El nombre es requerido',
-							pattern: {
-								value: /[A-Za-z]+/,
-								message: 'Debe ingresar un nombre válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Nombre del Material'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
-						/>
-						{errors.nombreMaterial && (
-							<Text style={styles.error}>{errors.nombreMaterial.message}</Text>
-						)}
+						controllerName='nombreMaterial'
+						requiredText='El nombre es requerido'
+						patternValue={/[A-Za-z0-9]+/}
+						patterMessage='Debe ingresar un nombre válido'
+						inputPlaceHolder='Nombre del Material'
+						errors={errors}
+					/>
 
 					<Text>Seleccione una Categoría:</Text>
 					<Controller
@@ -98,45 +81,29 @@ export function RegisterRecMats({navigation}) {
 						rules={{
 							required: 'La categoria es requerida',
 						}}
-						render={({ field: { onChange, value } }) => (
-								<SelectDropdown
-									data={categoriasMat} //Array de categorias
-									onSelect={(selectedItem) => {
-										onChange(selectedItem)
-									}}
-									defaultValue={value}
-									renderButton={(selectedItem, isOpened) => {
-										return (
-											<View> {/*Añadir estilos luego*/}
-												<Text>
-													{selectedItem || 'Selecciona '}
-												</Text>
-												<Icon name={isOpened ? 'chevron-up' : 'chevron-down'}/>
-											</View>
-										);
-									}}
-									renderItem={(item) => {
-										return (
-											<View>
-												<Text>{item}</Text>
-											</View>
-										);
-									}}
+						render={({ field: { onChange } }) => (
+								<DropDown
+									data={categoriasMateriales}
+									dropDownPlaceholder='Seleccione la categoría'
+									onChange={onChange}
 								/>
 						)}
-						/>
-
-						{/* Usar image picker para insertar una imagen */}
-
-						<Button
-							btnBgColor='#6892d5'
-							onPress={handleSubmit(onSubmit)}
-							btnText='Ingresar'
-						/>
-                </ScrollView>
-            </View>
-        </SafeAreaView>
-    );
+					/>
+					{errors.categoria && (
+						<Text style={styles.error}>
+							{errors.categoria.message}
+						</Text>
+					)}
+					{/* Usar image picker para insertar una imagen */}
+					<Button
+						btnBgColor='#6892d5'
+						onPress={handleSubmit(onSubmit)}
+						btnText='Ingresar'
+					/>
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({

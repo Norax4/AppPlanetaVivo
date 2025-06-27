@@ -78,6 +78,11 @@ export function HomeScreen({ navigation }) {
 								btnBgColor={'#6892d5'}
 								btnText={'Panel de usuario'}
 							/>
+							<Button
+								onPress={() => logout()}
+								btnBgColor={'#ff8c94'}
+								btnText={'Cerrar sesión'}
+							/>
 						</>
 					)}
 				</ScrollView>
