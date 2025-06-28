@@ -1,4 +1,11 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text, FlatList} from 'react-native';
+import {
+	StyleSheet,
+	View,
+	SafeAreaView,
+	ScrollView,
+	Text,
+	FlatList,
+} from 'react-native';
 
 import { Button } from '../../components/Button';
 import { useEffect, useState } from 'react';
@@ -11,16 +18,20 @@ export function ChallengesList({ navigation }) {
         fetchAllChallenges(setChallenges);
 	}, []);
 
-    const Item = ({object}) => {
-        return (
-        <View key={object.nombreReto} style={styles.itemView} >
-            <Text>{object.nombreReto}</Text>
-            <Button 
-            onPress={() => navigation.navigate('SelectedChallenge', {challenge: object})}
-            btnText={object.nombreReto} 
-            btnBgColor = '#6892d5'/>
-        </View>
-    )}
+	const Item = ({ object }) => {
+		return (
+			<View key={object.nombreReto} style={styles.itemView}>
+				<Text>{object.nombreReto}</Text>
+				<Button
+					onPress={() =>
+						navigation.navigate('SelectedChallenge', { challenge: object })
+					}
+					btnText={object.nombreReto}
+					btnBgColor='#6892d5'
+				/>
+			</View>
+		);
+	};
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
@@ -53,6 +64,7 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
+		marginBottom: 100,
 	},
 	error: {
 		color: 'red',

@@ -57,11 +57,11 @@ export function LoginUser({ navigation }) {
 					<FormInputText
 						control={control}
 						controllerName='email'
-						requiredText='El email es requerido'
+						requiredMessage='El email es requerido'
 						patternValue={
 							/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 						}
-						patterMessage='Debe ingresar un email válido'
+						patternMessage='Debe ingresar un email válido'
 						inputPlaceHolder='Email'
 						errors={errors}
 					/>
@@ -69,7 +69,7 @@ export function LoginUser({ navigation }) {
 					<FormInputText
 						control={control}
 						controllerName='contrasenia'
-						requiredText='Contraseña requerida'
+						requiredMessage='Contraseña requerida'
 						inputPlaceHolder='Contraseña'
 						errors={errors}
 						secureTextEntry={true}

@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '../../components/Button';
-import { DropDown } from '../../components/DropDown';
+import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';
 import { Alert } from 'react-native';
 import { useContext } from 'react';
@@ -14,7 +14,7 @@ export function RegisterChallenge({route, navigation}) {
 	const {user} = useContext(AuthContext);
 	const {challenge} = route.params;
 
-	console.log('usuario:',user);
+	console.log('usuario:', user);
 
 	const {
 		control,
@@ -32,31 +32,40 @@ export function RegisterChallenge({route, navigation}) {
 	}*/);
 
 	const registerChallenge = async (challenge) => {
-		const existe = await AsyncStorage.getItem(challenge.nombreReto.toLowerCase());
+		const existe = await AsyncStorage.getItem(
+			challenge.nombreReto.toLowerCase()
+		);
 		if (existe) throw new Error('El reto ya existe');
 
 		const extraInfo = {
-			usuario: {nombreUser: user.nombreUser, email: user.email}
-		}
+			usuario: { nombreUser: user.nombreUser, email: user.email },
+		};
 
 		const completeChallenge = {
-			...challenge, ...extraInfo
-		}
+			...challenge,
+			...extraInfo,
+		};
 
-		await AsyncStorage.setItem(challenge.nombreReto, JSON.stringify(completeChallenge));
+		await AsyncStorage.setItem(
+			challenge.nombreReto,
+			JSON.stringify(completeChallenge)
+		);
 
-		return {ok: true};
-	}
+		return { ok: true };
+	};
 
 	const onSubmit = async (data) => {
 		console.log(data);
 
 		try {
-			await registerChallenge(data)
+			await registerChallenge(data);
 
-			Alert.alert("Exito", "Reto registrado exitosamente",
-				[{text: 'OK', onPress: () => navigation.navigate('HomeScreen')}]
-			);
+			Alert.alert('Exito', 'Reto registrado exitosamente', [
+				{
+					text: 'OK',
+					onPress: () => navigation.navigate('HomeScreen'),
+				},
+			]);
 		} catch (err) {
 			console.error(err);
 			Alert.alert(
@@ -74,9 +83,9 @@ export function RegisterChallenge({route, navigation}) {
 					<FormInputText
 						control={control}
 						controllerName='nombreReto'
-						requiredText='El nombre es requerido'
+						requiredMessage='El nombre es requerido'
 						patternValue={/[A-Za-z0-9]+/}
-						patterMessage='Debe ingresar un nombre válido'
+						patternMessage='Debe ingresar un nombre válido'
 						inputPlaceHolder='Nombre del Reto'
 						errors={errors}
 					/>
@@ -84,37 +93,27 @@ export function RegisterChallenge({route, navigation}) {
 					<FormInputText
 						control={control}
 						controllerName='descripcion'
-						requiredText='La descripción es requerida'
+						requiredMessage='La descripción es requerida'
 						patternValue={/[A-Za-z0-9]+/}
-						patterMessage='Debe ingresar una descripción válida'
+						patternMessage='Debe ingresar una descripción válida'
 						inputPlaceHolder='Descripción'
 						errors={errors}
 					/>
 
-					{/* Falta crear componente de form para dropdown */}
-					<Controller
+					<FormDropDown
 						control={control}
-						name='reto'
-						rules={{
-							required: 'El reto es requerido',
-						}}
-						render={({ field: { onChange } }) => (
-								<DropDown
-									data={categoriasMateriales}
-									dropDownPlaceholder='Seleccione el tipo de reto'
-									onChange={onChange}
-								/>
-						)}
+						controllerName='reto'
+						requiredMessage='El reto es requerido'
+						data={categoriasMateriales}
+						dropDownPlaceholder='Seleccione el tipo de reto'
+						errors={errors}
 					/>
-					{errors.reto && (
-						<Text style={styles.error}>{errors.reto.message}</Text>
-					)}
 
 					{/* Actualizar a un DatePicker */}
 					<FormInputText
 						control={control}
 						controllerName='fechaLimite'
-						requiredText='Una fecha es requerida'
+						requiredMessage='Una fecha es requerida'
 						inputPlaceHolder='Fecha limite'
 						errors={errors}
 					/>
@@ -122,9 +121,9 @@ export function RegisterChallenge({route, navigation}) {
 					<FormInputText
 						control={control}
 						controllerName='puntaje'
-						requiredText='El puntaje es requerido'
+						requiredMessage='El puntaje es requerido'
 						patternValue={/^[0-9]+$/}
-						patterMessage='Debe ingresar el puntaje del reto'
+						patternMessage='Debe ingresar el puntaje del reto'
 						inputPlaceHolder='Puntaje'
 						errors={errors}
 					/>
@@ -141,7 +140,6 @@ export function RegisterChallenge({route, navigation}) {
 }
 
 export const styles = StyleSheet.create({
-	//edit stylesheet
 	safeAreaView: {
 		flex: 1,
 	},
@@ -152,11 +150,6 @@ export const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
-	},
-	error: {
-		color: 'red',
-		marginTop: 5,
-		fontWeight: 650,
-		fontSize: 16,
+		marginBottom: 100,
 	},
 });

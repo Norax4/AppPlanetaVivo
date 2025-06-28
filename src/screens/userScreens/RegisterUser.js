@@ -1,8 +1,8 @@
 import { StyleSheet, View, SafeAreaView, ScrollView, Text, Image } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-import { InputText } from '../../components/InputText';
-import { InputNumber } from '../../components/InputNumber';
+import { FormInputNumber } from '../../components/FormInputNumber';
+import { FormInputText } from '../../components/FormInputText';
 import { Button } from '../../components/Button';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,7 +16,6 @@ export function RegisterUser({ navigation }) {
 	const {
 		control,
 		handleSubmit,
-		getValues,
 		formState: { errors },
 	} = useForm();
 
@@ -71,153 +70,77 @@ export function RegisterUser({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					<Controller
+					<FormInputText
 						control={control}
-						name='nombreUser'
-						rules={{
-							required: 'El nombre de usuario es requerido',
-							pattern: {
-								value: /[A-Za-z0-9]+/,
-								message: 'Debe ingresar un nombre válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Nombre y Apellido'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='nombreUser'
+						requiredMessage='El nombre de usuario es requerido'
+						patternValue={/[A-Za-z0-9]+/}
+						patternMessage='Debe ingresar un nombre válido'
+						inputPlaceHolder='Nombre'
+						errors={errors}
 					/>
-					{errors.nombreUser && (
-						<Text style={styles.error}>
-							{errors.nombreUser.message}
-						</Text>
-					)}
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='email'
-						rules={{
-							required: 'El email es requerido',
-							pattern: {
-								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-								message: 'Debe ingresar un email válido',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Email'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='apellidoUser'
+						requiredMessage='El apellido de usuario es requerido'
+						patternValue={/[A-Za-z0-9]+/}
+						patternMessage='Debe ingresar un apellido válido'
+						inputPlaceHolder='Apellido'
+						errors={errors}
 					/>
-					{errors.email && (
-						<Text style={styles.error}>{errors.email.message}</Text>
-					)}
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='edad'
-						rules={{
-							required: 'Debe ingresar su edad',
-							pattern: {
-								value: /^[0-9]+$/,
-								message: 'Solo se permiten números',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputNumber
-								placeholder='Edad'
-								onChange={(text) =>
-									onChange(text.replace(/[^0-9]/g, ''))
-								}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='email'
+						requiredMessage='El email es requerido'
+						patternValue={
+							/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+						}
+						patternMessage='Debe ingresar un email válido'
+						inputPlaceHolder='Email'
+						errors={errors}
 					/>
-					{errors.edad && (
-						<Text style={styles.error}>{errors.edad.message}</Text>
-					)}
 
-					<Controller
+					<FormInputNumber
 						control={control}
-						name='zona'
-						rules={{
-							required: 'La zona es requerida',
-							pattern: {
-								value: /[A-Za-z0-9]+/,
-								message: 'No se permiten símbolos',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Barrio o zona de residencia'
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='edad'
+						requiredMessage='Debe ingresar su edad'
+						patternValue={/^[0-9]+$/}
+						patternMessage='Solo se permiten números'
+						placeholder='Edad'
+						errors={errors}
 					/>
-					{errors.zona && (
-						<Text style={styles.error}>{errors.zona.message}</Text>
-					)}
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='contrasenia'
-						rules={{
-							required: 'Contraseña requerida',
-							pattern: {
-								value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-								message:
-									'La contraseña debe contener al menos ocho caracteres, una mayúscula, una minúscula y un número',
-							},
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Contraseña'
-								secureTextEntry={true}
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='zona'
+						requiredMessage='La zona es requerida'
+						patternValue={/[A-Za-z0-9]+/}
+						patternMessage='No se permiten símbolos'
+						inputPlaceHolder='Barrio o zona de residencia'
+						errors={errors}
 					/>
-					{errors.contrasenia && (
-						<Text style={styles.error}>
-							{errors.contrasenia.message}
-						</Text>
-					)}
 
-					<Controller
+					<FormInputText
 						control={control}
-						name='confirmarContrasenia'
-						rules={{
-							required: 'Debe confirmar su contraseña',
-							validate: (value) =>
-								value === getValues('contrasenia') ||
-								'Las contraseñas no coinciden',
-						}}
-						render={({ field: { onChange, onBlur, value } }) => (
-							<InputText
-								placeholder='Confirmar contraseña'
-								secureTextEntry={true}
-								onChange={(text) => onChange(text)}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+						controllerName='contrasenia'
+						requiredMessage='La contrasenia es requerida'
+						patternValue={/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/}
+						patternMessage='La contraseña debe contener al menos ocho caracteres, una mayúscula, una minúscula y un número'
+						inputPlaceHolder='Contraseña'
+						secureTextEntry={true}
+						errors={errors}
 					/>
-					{errors.confirmarContrasenia && (
-						<Text style={styles.error}>
-							{errors.confirmarContrasenia.message}
-						</Text>
-					)}
+
+					<FormInputText
+						control={control}
+						controllerName='confirmarContrasenia'
+						requiredMessage='Debe confirmar su contraseña'
+						inputPlaceHolder='Confirmar contraseña'
+						secureTextEntry={true}
+						errors={errors}
+					/>
 
 					<Text>Elige una foto de perfil</Text>
 					<Controller
@@ -268,12 +191,7 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
-	},
-	error: {
-		color: 'red',
-		marginTop: 5,
-		fontWeight: 650,
-		fontSize: 16,
+		marginBottom: 100,
 	},
 	image: {
 		width: 200,
