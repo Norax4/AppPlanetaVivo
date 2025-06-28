@@ -1,7 +1,6 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, ScrollView, Text, Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 
-import * as ImagePicker from 'expo-image-picker'; //manejar la subida de imagenes desde el dispositivo
 import { InputText } from '../../components/InputText';
 import { InputNumber } from '../../components/InputNumber';
 import { Button } from '../../components/Button';
@@ -9,6 +8,7 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import { AuthContext } from '../../database/authContext';
+import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';
 
 export function RegisterUser({ navigation }) {
 	const { user, login } = useContext(AuthContext);
@@ -219,6 +219,33 @@ export function RegisterUser({ navigation }) {
 						</Text>
 					)}
 
+					<Text>Elige una foto de perfil</Text>
+					<Controller
+						control={control}
+						name='imagenUser'
+						rules={{
+							required: 'Una imagen de perfil es requerida',
+						}}
+						render={({ field: { onChange, value } }) => (
+							<>
+								<Button 
+								btnBgColor="#3caf74"
+								btnText="Elige desde la galeria" 
+								onPress={() => pickFromGallery(onChange)} />
+								<Button 
+								btnBgColor="#3caf74"
+								btnText="Toma una foto" 
+								onPress={() => takePhoto(onChange)} />
+            					{value && <Image source={{ uri: value }} style={styles.image} />}
+							</>
+						)}
+					/>
+					{errors.imagenUser && (
+						<Text style={styles.error}>
+							{errors.imagenUser.message}
+						</Text>
+					)}
+
 					<Button
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
@@ -248,4 +275,11 @@ const styles = StyleSheet.create({
 		fontWeight: 650,
 		fontSize: 16,
 	},
+	image: {
+		width: 200,
+		height: 200,
+		borderRadius: 15,
+		padding: 10,
+		resizeMode: 'center'
+	}
 });

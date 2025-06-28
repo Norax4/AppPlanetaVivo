@@ -10,8 +10,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
 
-export function RegisterChallenge({navigation}) {
+export function RegisterChallenge({route, navigation}) {
 	const {user} = useContext(AuthContext);
+	const {challenge} = route.params;
 
 	console.log('usuario:',user);
 
@@ -29,8 +30,6 @@ export function RegisterChallenge({navigation}) {
 			puntaje: ''
 		}
 	}*/);
-	
-	console.log(watch());
 
 	const registerChallenge = async (challenge) => {
 		const existe = await AsyncStorage.getItem(challenge.nombreReto.toLowerCase());
@@ -66,7 +65,6 @@ export function RegisterChallenge({navigation}) {
 				[{ text: 'OK' }]
 			);
 		}
-		
 	};
 
 	return (

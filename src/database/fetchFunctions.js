@@ -21,17 +21,24 @@ export async function fetchAllusers() {
     }
 };
 
-export async function fetchAllChallenges() {
+export async function fetchAllChallenges(setter) {
     try{
         const keys = await AsyncStorage.getAllKeys();
         const data = await AsyncStorage.multiGet(keys);
-        const challenges = data.map(([key, value]) => {
-            if (value.indexOf("nombreReto") !== -1) {
-                return { key, value };
-            }
-        });
-        console.log(challenges);
-        
+        const challengesList = data.map(([key, value]) => {
+            try {
+                return JSON.parse(value);
+                } catch (e) {
+                // Si no es un JSON válido, se ignora
+                return null;
+                }
+            })
+            .filter(item => item && item.nombreReto);
+                
+        console.log(challengesList);
+        if (challengesList.length > 0) {
+            setter(challengesList);
+        }
     }catch(error){
         console.log('Error al conseguir usuarios', error);
         return error;

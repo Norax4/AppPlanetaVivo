@@ -2,36 +2,13 @@ import { StyleSheet, View, SafeAreaView, ScrollView, Text, FlatList} from 'react
 
 import { Button } from '../../components/Button';
 import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchAllChallenges } from '../../database/fetchFunctions';
 
 export function ChallengesList({ navigation }) {
 	const [challenges, setChallenges] = useState([]);
 
 	useEffect(() => {
-		const fetchAllChallenges = async () => {
-            try{
-                const keys = await AsyncStorage.getAllKeys();
-                const data = await AsyncStorage.multiGet(keys);
-                const challengesList = data.map(([key, value]) => {
-                    try {
-                        return JSON.parse(value);
-                        } catch (e) {
-                        // Si no es un JSON válido, se ignora
-                        return null;
-                        }
-                    })
-                    .filter(item => item && item.nombreReto);
-                
-                    console.log(challengesList);
-                if (challengesList.length > 0) {
-                    setChallenges(challengesList);
-                }
-            }catch(error){
-                console.log('Error al conseguir usuarios', error);
-                return error;
-            }
-        };
-        fetchAllChallenges()
+        fetchAllChallenges(setChallenges);
 	}, []);
 
     const Item = ({object}) => {
@@ -39,7 +16,7 @@ export function ChallengesList({ navigation }) {
         <View key={object.nombreReto} style={styles.itemView} >
             <Text>{object.nombreReto}</Text>
             <Button 
-            onPress={() => navigation.navigate('SelectedChallenge', {object})}
+            onPress={() => navigation.navigate('SelectedChallenge', {challenge: object})}
             btnText={object.nombreReto} 
             btnBgColor = '#6892d5'/>
         </View>
@@ -56,7 +33,7 @@ export function ChallengesList({ navigation }) {
                         contentContainerStyle={{paddingHorizontal: 20}}
                         data = {challenges}
                         renderItem={({item}) => <Item object = {item} />}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.nombreReto}
                         />
                     )}
                 </View>
@@ -84,7 +61,8 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
     itemView: {
-      backgroundColor: '#f9c2ff',
+        backgroundColor: '#fbfffe',
+        borderRadius: 10,
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,

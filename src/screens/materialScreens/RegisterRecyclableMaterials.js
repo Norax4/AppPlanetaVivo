@@ -8,8 +8,10 @@ import { AuthContext } from '../../database/authContext';
 import { Alert } from 'react-native';
 import { Button } from '../../components/Button';
 import { DropDown } from '../../components/DropDown';
+import { Image } from 'react-native';
 import { FormInputText } from '../../components/FormInputText';
 import { categoriasMateriales } from '../../database/categories';
+import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';
 
 export function RegisterRecMats({navigation}) {
 	const { user } = useContext(AuthContext);
@@ -45,6 +47,7 @@ export function RegisterRecMats({navigation}) {
 	const onSubmit = async (data) => {
 		console.log('click en ingresar');
 		console.log(data);
+		console.log(data.imagenMaterial);
 
 		try {
 			await registerMaterial(data);
@@ -93,7 +96,34 @@ export function RegisterRecMats({navigation}) {
 							{errors.categoria.message}
 						</Text>
 					)}
-					{/* Usar image picker para insertar una imagen */}
+
+					
+					<Controller
+						control={control}
+						name='imagenMaterial'
+						rules={{
+							required: 'Una imagen es requerida',
+						}}
+						render={({ field: { onChange, value } }) => (
+							<>
+								<Button 
+								btnBgColor="#3caf74"
+								btnText="Elige desde la galeria" 
+								onPress={() => pickFromGallery(onChange)} />
+								<Button 
+								btnBgColor="#3caf74"
+								btnText="Toma una foto" 
+								onPress={() => takePhoto(onChange)} />
+            					{value && <Image source={{ uri: value }} style={styles.image} />}
+							</>
+						)}
+					/>
+					{errors.imagenMaterial && (
+						<Text style={styles.error}>
+							{errors.imagenMaterial.message}
+						</Text>
+					)}
+
 					<Button
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
@@ -123,4 +153,11 @@ const styles = StyleSheet.create({
 		fontWeight: 650,
 		fontSize: 16,
 	},
+	image: {
+		width: 200,
+		height: 200,
+		borderRadius: 15,
+		padding: 10,
+		resizeMode: 'center'
+	}
 });
