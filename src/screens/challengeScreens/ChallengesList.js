@@ -15,7 +15,11 @@ export function ChallengesList({ navigation }) {
 	const [challenges, setChallenges] = useState([]);
 
 	useEffect(() => {
-        fetchAllChallenges(setChallenges);
+        const fetch = async () => {
+            const data = await fetchAllChallenges();
+            setChallenges(data);
+        }
+        fetch();
 	}, []);
 
 	const Item = ({ object }) => {

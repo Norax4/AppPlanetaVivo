@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView, FlatList, ScrollView, Alert } from 'react-native';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../database/authContext';
 import * as Progress from 'react-native-progress';
 import { Button } from '../../components/Button';
@@ -9,17 +9,13 @@ export function UserPanel({navigation}) {
 	const puntos = user.points;
 	const nivel = (puntos ? Math.floor(puntos / 100) : 1);
 	const [listState, setListState] = useState('creado'); 
+	const [challenges, setChallenges] = useState([]);
 	const [createdChallenges, setCreatedChall] = useState([]);
 	const [partakenChallenges, setPartakenChall] = useState([]);
 
-	//
-
-	//Alerta de eliminación de cuenta
-	const deleteAccount = async () => {
-		Alert.alert("Cuidado", "¿Seguro de eliminar tu cuenta?"
-			[{ text: 'OK'}]
-		);
-	}
+	useEffect(() => {
+		
+	}, []);
 
 	//Cambiar de lista
 	const changeList = () => {
@@ -36,9 +32,12 @@ export function UserPanel({navigation}) {
 			<View key={object.nombreReto} style={styles.itemView} >
 				<Text>{object.nombreReto}</Text>
 				<Button 
-				onPress={() => navigation.navigate('SelectedChallenge', {challenge: object})}
-				btnText={object.nombreReto} 
-				btnBgColor = '#6892d5'/>
+					onPress={() => 
+						navigation.navigate('SelectedChallenge', {challenge: object})
+					}
+					btnText={object.nombreReto} 
+					btnBgColor = '#6892d5'
+				/>
 			</View>
 		)}
 

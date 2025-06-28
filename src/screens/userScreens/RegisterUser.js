@@ -1,5 +1,5 @@
 import { StyleSheet, View, SafeAreaView, ScrollView, Text, Image } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import { FormInputNumber } from '../../components/FormInputNumber';
 import { FormInputText } from '../../components/FormInputText';

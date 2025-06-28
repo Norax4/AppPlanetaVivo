@@ -1,14 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker';
-import { useForm } from 'react-hook-form';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Alert } from 'react-native';
 import { useContext } from 'react';
-import { AuthContext } from '../../database/authContext';
 
-import { Alert } from 'react-native';
+import { AuthContext } from '../../database/authContext';
 import { Button } from '../../components/Button';
 import { FormDropDown } from '../../components/FormDropDown';
-import { Image } from 'react-native';
 import { FormInputText } from '../../components/FormInputText';
 import { categoriasMateriales } from '../../database/categories';
 import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';

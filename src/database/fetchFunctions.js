@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export async function fetchAllusers() {
+/*export async function fetchAllusers() {
     try {
         const keys = await AsyncStorage.getAllKeys();
         const data = await AsyncStorage.multiGet(keys);
@@ -19,9 +19,9 @@ export async function fetchAllusers() {
         console('Error al conseguir usuarios:', error)
         return error;
     }
-};
+};*/
 
-export async function fetchAllChallenges(setter) {
+export async function fetchAllChallenges() {
     try{
         const keys = await AsyncStorage.getAllKeys();
         const data = await AsyncStorage.multiGet(keys);
@@ -37,7 +37,7 @@ export async function fetchAllChallenges(setter) {
                 
         console.log(challengesList);
         if (challengesList.length > 0) {
-            setter(challengesList);
+            return challengesList;
         }
     }catch(error){
         console.log('Error al conseguir usuarios', error);

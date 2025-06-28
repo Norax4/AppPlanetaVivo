@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm } from 'react-hook-form';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, Alert } from 'react-native';
 
 import { Button } from '../../components/Button';
 import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';
-import { Alert } from 'react-native';
 import { useContext } from 'react';
 import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
@@ -19,7 +18,6 @@ export function RegisterChallenge({route, navigation}) {
 	const {
 		control,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm(/*{
 		defaultValues: {
