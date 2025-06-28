@@ -1,4 +1,11 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text, FlatList} from 'react-native';
+import {
+	StyleSheet,
+	View,
+	SafeAreaView,
+	ScrollView,
+	Text,
+	FlatList,
+} from 'react-native';
 
 import { Button } from '../../components/Button';
 import { useEffect, useState } from 'react';
@@ -9,60 +16,65 @@ export function ChallengesList({ navigation }) {
 
 	useEffect(() => {
 		const fetchAllChallenges = async () => {
-            try{
-                const keys = await AsyncStorage.getAllKeys();
-                const data = await AsyncStorage.multiGet(keys);
-                const challengesList = data.map(([key, value]) => {
-                    try {
-                        return JSON.parse(value);
-                        } catch (e) {
-                        // Si no es un JSON válido, se ignora
-                        return null;
-                        }
-                    })
-                    .filter(item => item && item.nombreReto);
-                
-                    console.log(challengesList);
-                if (challengesList.length > 0) {
-                    setChallenges(challengesList);
-                }
-            }catch(error){
-                console.log('Error al conseguir usuarios', error);
-                return error;
-            }
-        };
-        fetchAllChallenges()
+			try {
+				const keys = await AsyncStorage.getAllKeys();
+				const data = await AsyncStorage.multiGet(keys);
+				const challengesList = data
+					.map(([key, value]) => {
+						try {
+							return JSON.parse(value);
+						} catch (e) {
+							// Si no es un JSON válido, se ignora
+							return null;
+						}
+					})
+					.filter((item) => item && item.nombreReto);
+
+				console.log(challengesList);
+				if (challengesList.length > 0) {
+					setChallenges(challengesList);
+				}
+			} catch (error) {
+				console.log('Error al conseguir usuarios', error);
+				return error;
+			}
+		};
+		fetchAllChallenges();
 	}, []);
 
-    const Item = ({object}) => {
-        return (
-        <View key={object.nombreReto} style={styles.itemView} >
-            <Text>{object.nombreReto}</Text>
-            <Button 
-            onPress={() => navigation.navigate('SelectedChallenge', {object})}
-            btnText={object.nombreReto} 
-            btnBgColor = '#6892d5'/>
-        </View>
-    )}
+	const Item = ({ object }) => {
+		return (
+			<View key={object.nombreReto} style={styles.itemView}>
+				<Text>{object.nombreReto}</Text>
+				<Button
+					onPress={() =>
+						navigation.navigate('SelectedChallenge', { object })
+					}
+					btnText={object.nombreReto}
+					btnBgColor='#6892d5'
+				/>
+			</View>
+		);
+	};
 
-    return (
-        <SafeAreaView style={styles.safeAreaView}>
-            <View style={styles.view}>
-                <View style={styles.view}>
-                    {challenges <= 0 ? (
-                        <Text> No hay retos actualmente. </Text>
-                    ): (
-                        <FlatList 
-                        contentContainerStyle={{paddingHorizontal: 20}}
-                        data = {challenges}
-                        renderItem={({item}) => <Item object = {item} />}
-                        keyExtractor={item => item.id}
-                        />
-                    )}
-                </View>
-            </View>
-        </SafeAreaView>
-    );
+	return (
+		<SafeAreaView style={styles.safeAreaView}>
+			<View style={styles.view}>
+				<View style={styles.view}>
+					{challenges <= 0 ? (
+						<Text> No hay retos actualmente. </Text>
+					) : (
+						<FlatList
+							contentContainerStyle={{ paddingHorizontal: 20 }}
+							data={challenges}
+							renderItem={({ item }) => <Item object={item} />}
+							keyExtractor={(item) => item.id}
+						/>
+					)}
+				</View>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
@@ -76,6 +88,7 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
+		marginBottom: 100,
 	},
 	error: {
 		color: 'red',
@@ -83,10 +96,10 @@ const styles = StyleSheet.create({
 		fontWeight: 650,
 		fontSize: 16,
 	},
-    itemView: {
-      backgroundColor: '#f9c2ff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    }
+	itemView: {
+		backgroundColor: '#f9c2ff',
+		padding: 20,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
 });

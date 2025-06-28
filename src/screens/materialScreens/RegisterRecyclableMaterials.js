@@ -1,17 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useContext } from 'react';
 import { AuthContext } from '../../database/authContext';
 
 import { Alert } from 'react-native';
 import { Button } from '../../components/Button';
-import { DropDown } from '../../components/DropDown';
+import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';
 import { categoriasMateriales } from '../../database/categories';
 
-export function RegisterRecMats({navigation}) {
+export function RegisterRecMats({ navigation }) {
 	const { user } = useContext(AuthContext);
 
 	console.log('usuario:', user);
@@ -23,24 +23,29 @@ export function RegisterRecMats({navigation}) {
 	} = useForm();
 
 	const registerMaterial = async (material) => {
-		const existe = await AsyncStorage.getItem(material.nombreMaterial.toLowerCase());
+		const existe = await AsyncStorage.getItem(
+			material.nombreMaterial.toLowerCase()
+		);
 		if (existe) throw new Error('El material ya existe');
 
 		const extraInfo = {
-			usuario: {nombreUser: user.nombreUser, email: user.email}
-		}
+			usuario: { nombreUser: user.nombreUser, email: user.email },
+		};
 
 		const completeMaterial = {
 			...material,
-			...extraInfo
-		}
+			...extraInfo,
+		};
 
 		console.log(completeMaterial);
 
-		await AsyncStorage.setItem(material.nombreMaterial, JSON.stringify(completeMaterial));
+		await AsyncStorage.setItem(
+			material.nombreMaterial,
+			JSON.stringify(completeMaterial)
+		);
 
-		return {ok: true} //?
-	}
+		return { ok: true }; //?
+	};
 
 	const onSubmit = async (data) => {
 		console.log('click en ingresar');
@@ -67,33 +72,24 @@ export function RegisterRecMats({navigation}) {
 					<FormInputText
 						control={control}
 						controllerName='nombreMaterial'
-						requiredText='El nombre es requerido'
+						requiredMessage='El nombre es requerido'
 						patternValue={/[A-Za-z0-9]+/}
-						patterMessage='Debe ingresar un nombre válido'
+						patternMessage='Debe ingresar un nombre válido'
 						inputPlaceHolder='Nombre del Material'
 						errors={errors}
 					/>
 
-					<Controller
+					<FormDropDown
 						control={control}
-						name='categoria'
-						rules={{
-							required: 'La categoria es requerida',
-						}}
-						render={({ field: { onChange } }) => (
-								<DropDown
-									data={categoriasMateriales}
-									dropDownPlaceholder='Seleccione la categoría'
-									onChange={onChange}
-								/>
-						)}
+						controllerName='categoria'
+						requiredMessage='La categoría es requerida'
+						data={categoriasMateriales}
+						dropDownPlaceholder='Seleccione la categoría'
+						errors={errors}
 					/>
-					{errors.categoria && (
-						<Text style={styles.error}>
-							{errors.categoria.message}
-						</Text>
-					)}
+
 					{/* Usar image picker para insertar una imagen */}
+
 					<Button
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
@@ -116,6 +112,7 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
+		marginBottom: 100,
 	},
 	error: {
 		color: 'red',

@@ -1,21 +1,18 @@
 import { Controller } from 'react-hook-form';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { InputText } from './InputText';
+import { InputNumber } from './InputNumber';
 
-export function FormInputText({
+export function FormInputNumber({
 	control,
 	controllerName,
 	requiredMessage,
 	patternValue,
 	patternMessage,
-	inputPlaceHolder,
+	placeholder,
 	errors,
-	secureTextEntry,
 }) {
 	const rules = {};
-
-	let secureText = false;
 
 	if (requiredMessage) {
 		rules.required = requiredMessage;
@@ -28,10 +25,6 @@ export function FormInputText({
 		};
 	}
 
-	if (secureTextEntry) {
-		secureText = true;
-	}
-
 	return (
 		<View>
 			<Controller
@@ -39,15 +32,17 @@ export function FormInputText({
 				name={controllerName}
 				rules={rules}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<InputText
-						placeholder={inputPlaceHolder}
-						onChange={(text) => onChange(text)}
+					<InputNumber
+						placeholder={placeholder}
+						onChange={(text) =>
+							onChange(text.replace(/[^0-9]/g, ''))
+						}
 						onBlur={onBlur}
 						value={value}
-						secureTextEntry={secureText}
 					/>
 				)}
 			/>
+
 			{errors[controllerName] && (
 				<Text style={styles.error}>
 					{errors[controllerName].message}
