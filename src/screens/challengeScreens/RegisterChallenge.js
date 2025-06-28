@@ -5,6 +5,10 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../components/Button';
 import { DropDown } from '../../components/DropDown';
 import { FormInputText } from '../../components/FormInputText';
+import { Alert } from 'react-native';
+import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
+import { categoriasMateriales } from '../../database/categories';
 
 export function RegisterChallenge({navigation}) {
 	const {user} = useContext(AuthContext);
@@ -97,13 +101,11 @@ export function RegisterChallenge({navigation}) {
 							required: 'El reto es requerido',
 						}}
 						render={({ field: { onChange } }) => (
-							<>
 								<DropDown
-									data={[]}
+									data={categoriasMateriales}
 									dropDownPlaceholder='Seleccione el tipo de reto'
 									onChange={onChange}
 								/>
-							</>
 						)}
 					/>
 					{errors.reto && (

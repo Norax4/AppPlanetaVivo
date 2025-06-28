@@ -34,15 +34,16 @@ export function ChallengesList({ navigation }) {
         fetchAllChallenges()
 	}, []);
 
-    const Item = (object) => {
+    const Item = ({object}) => {
+        return (
         <View key={object.nombreReto} style={styles.itemView} >
             <Text>{object.nombreReto}</Text>
-            {/*<Button 
+            <Button 
             onPress={() => navigation.navigate('SelectedChallenge', {object})}
             btnText={object.nombreReto} 
-            btnBgColor = '#6892d5'/>*/}
+            btnBgColor = '#6892d5'/>
         </View>
-    }
+    )}
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
@@ -54,7 +55,7 @@ export function ChallengesList({ navigation }) {
                         <FlatList 
                         contentContainerStyle={{paddingHorizontal: 20}}
                         data = {challenges}
-                        renderItem={({item}) => Item(item)}
+                        renderItem={({item}) => <Item object = {item} />}
                         keyExtractor={item => item.id}
                         />
                     )}
@@ -83,9 +84,9 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
     itemView: {
-      backgroundColor: "white",
-      margin: 5,
-      padding: 10,
-      borderRadius: 10,
+      backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
     }
 });

@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useContext } from 'react';
+import { AuthContext } from '../../database/authContext';
 
 import { Alert } from 'react-native';
 import { Button } from '../../components/Button';
@@ -20,8 +22,6 @@ export function RegisterRecMats({navigation}) {
 		formState: { errors },
 	} = useForm();
 
-	console.log(watch());
-
 	const registerMaterial = async (material) => {
 		const existe = await AsyncStorage.getItem(material.nombreMaterial.toLowerCase());
 		if (existe) throw new Error('El material ya existe');
@@ -37,7 +37,7 @@ export function RegisterRecMats({navigation}) {
 
 		console.log(completeMaterial);
 
-		await AsyncStorage.setItem(material.nombreMaterial, JSON.Stringify(completeMaterial));
+		await AsyncStorage.setItem(material.nombreMaterial, JSON.stringify(completeMaterial));
 
 		return {ok: true} //?
 	}
@@ -74,7 +74,6 @@ export function RegisterRecMats({navigation}) {
 						errors={errors}
 					/>
 
-					<Text>Seleccione una Categoría:</Text>
 					<Controller
 						control={control}
 						name='categoria'
