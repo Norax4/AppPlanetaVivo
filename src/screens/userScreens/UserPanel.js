@@ -1,29 +1,46 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList, ScrollView, Alert } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	SafeAreaView,
+	FlatList,
+	ScrollView,
+	Alert,
+} from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../database/authContext';
 import * as Progress from 'react-native-progress';
-import { Button } from '../../components/Button';
-import { fetchAllChallenges, fetchAllChallInputs } from '../../database/fetchFunctions';
+import { CustomButton } from '../../components/CustomButton';
+import {
+	fetchAllChallenges,
+	fetchAllChallInputs,
+} from '../../database/fetchFunctions';
 
-export function UserPanel({navigation}) {
+export function UserPanel({ navigation }) {
 	const { user } = useContext(AuthContext);
 	const puntos = user.points;
-	const nivel = (puntos ? Math.floor(puntos / 100) : 1);
-	const [listState, setListState] = useState('creado'); 
+	const nivel = puntos ? Math.floor(puntos / 100) : 1;
+	const [listState, setListState] = useState('creado');
 	const [createdChallenges, setCreatedChall] = useState([]);
 	const [partakenChallenges, setPartakenChall] = useState([]);
 
 	useEffect(() => {
-		const fetch = async() => {
+		const fetch = async () => {
 			const data1 = await fetchAllChallenges();
-			const dataChall = data1.filter(chal => chal.usuario.email === user.email);
+			const dataChall = data1.filter(
+				(chal) => chal.usuario.email === user.email
+			);
 			setCreatedChall(dataChall);
 
 			const data2 = await fetchAllChallInputs();
-			const participatedNames = new Set(data2.map(input => input.reto.nombre));
-			const partChall = data1.filter(chal => participatedNames.has(chal.nombreReto));
-      		setPartakenChall(partChall);
-		}
+			const participatedNames = new Set(
+				data2.map((input) => input.reto.nombre)
+			);
+			const partChall = data1.filter((chal) =>
+				participatedNames.has(chal.nombreReto)
+			);
+			setPartakenChall(partChall);
+		};
 		fetch();
 	}, []);
 
@@ -34,75 +51,88 @@ export function UserPanel({navigation}) {
 		} else {
 			setListState('creado');
 		}
-	}
+	};
 
 	//Items de las listas
-	const Item = ({object}) => {
-		
+	const Item = ({ object }) => {
 		return (
-			<View key={object.nombreReto} style={styles.itemView} >
+			<View key={object.nombreReto} style={styles.itemView}>
 				<Text>{object.nombreReto}</Text>
 				{listState === 'creado' ? (
-					<Button 
-						onPress={() => 
-							navigation.navigate('RegisterChallenge', {challenge: object})
+					<CustomButton
+						onPress={() =>
+							navigation.navigate('RegisterChallenge', {
+								challenge: object,
+							})
 						}
 						btnText='Editar reto'
-						btnBgColor = '#6892d5'
+						btnBgColor='#6892d5'
 					/>
 				) : (
-					<Button 
-						onPress={() => 
-							navigation.navigate('SelectedChallenge', {challenge: object})
+					<CustomButton
+						onPress={() =>
+							navigation.navigate('SelectedChallenge', {
+								challenge: object,
+							})
 						}
-						btnText='Ver reto' 
-						btnBgColor = '#6892d5'
+						btnText='Ver reto'
+						btnBgColor='#6892d5'
 					/>
 				)}
 			</View>
-		)}
+		);
+	};
 
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-				
-				{/* usar <Image /> para la imagen aqui */}
-				<Text style={styles.nameText}>{user.nombreUser}</Text>
-				<Text style={styles.nivelText}>Nivel {nivel}</Text>
-				<Text style={styles.propText}>Puntos: {puntos}</Text>
-				<Progress.Bar progress={1} /*placeholder */ width={345}/>
-				{/*Agregar un gráfico de retos por semana y mes con Victory Native oRecharts
+					{/* usar <Image /> para la imagen aqui */}
+					<Text style={styles.nameText}>{user.nombreUser}</Text>
+					<Text style={styles.nivelText}>Nivel {nivel}</Text>
+					<Text style={styles.propText}>Puntos: {puntos}</Text>
+					<Progress.Bar progress={1} /*placeholder */ width={345} />
+					{/*Agregar un gráfico de retos por semana y mes con Victory Native oRecharts
 				Agregar retos completados por el usuario*/}
-				{/* Poner boton de logout aqui? */}
+					{/* Poner boton de logout aqui? */}
 
-				<View style={{height: 2, width: '100%', backgroundColor: '#000000', marginVertical: 10}}/>
-				
-					<Button 
+					<View
+						style={{
+							height: 2,
+							width: '100%',
+							backgroundColor: '#000000',
+							marginVertical: 10,
+						}}
+					/>
+
+					<CustomButton
 						btnBgColor='#6892d5'
-						btnText={listState === 'creado' ? 
-						'Ver retos creados' : 'Ver participaciones'}
+						btnText={
+							listState === 'creado'
+								? 'Ver retos creados'
+								: 'Ver participaciones'
+						}
 						onPress={() => changeList()}
 					/>
 				</ScrollView>
 				{listState === 'creado' ? (
-					<FlatList 
-						contentContainerStyle={{paddingHorizontal: 20}}
-						data = {createdChallenges}
-						renderItem={({item}) => <Item object = {item} />}
-						keyExtractor={item => item.nombreReto}
+					<FlatList
+						contentContainerStyle={{ paddingHorizontal: 20 }}
+						data={createdChallenges}
+						renderItem={({ item }) => <Item object={item} />}
+						keyExtractor={(item) => item.nombreReto}
 					/>
 				) : (
-					<FlatList 
-						contentContainerStyle={{paddingHorizontal: 20}}
-						data = {partakenChallenges}
-						renderItem={({item}) => <Item object = {item} />}
-						keyExtractor={item => item.nombreReto}
+					<FlatList
+						contentContainerStyle={{ paddingHorizontal: 20 }}
+						data={partakenChallenges}
+						renderItem={({ item }) => <Item object={item} />}
+						keyExtractor={(item) => item.nombreReto}
 					/>
 				)}
 
 				{/*<ScrollView style={styles.scrollView}>
-					<Button 
+					<CustomButton 
 						btnText="Eliminar cuenta"
 						btnBgColor='#ff8c94'
 						onPress={deleteAccount()}
@@ -128,7 +158,7 @@ const styles = StyleSheet.create({
 	nameText: {
 		margin: 10,
 		fontSize: 30,
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	nivelText: {
 		margin: 10,
@@ -138,7 +168,7 @@ const styles = StyleSheet.create({
 	propText: {
 		margin: 10,
 		fontSize: 15,
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	/*error: {
 		color: 'red',
@@ -146,10 +176,10 @@ const styles = StyleSheet.create({
 		fontWeight: 650,
 		fontSize: 16,
 	},*/
-    itemView: {
-      	backgroundColor: '#f4fffb',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    }
+	itemView: {
+		backgroundColor: '#f4fffb',
+		padding: 20,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
 });

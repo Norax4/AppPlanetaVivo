@@ -1,4 +1,11 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Text, Image } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	SafeAreaView,
+	ScrollView,
+	Text,
+	Image,
+} from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 
 import { FormInputNumber } from '../../components/FormInputNumber';
@@ -151,15 +158,22 @@ export function RegisterUser({ navigation }) {
 						}}
 						render={({ field: { onChange, value } }) => (
 							<>
-								<Button 
-								btnBgColor="#3caf74"
-								btnText="Elige desde la galeria" 
-								onPress={() => pickFromGallery(onChange)} />
-								<Button 
-								btnBgColor="#3caf74"
-								btnText="Toma una foto" 
-								onPress={() => takePhoto(onChange)} />
-            					{value && <Image source={{ uri: value }} style={styles.image} />}
+								<CustomButton
+									btnBgColor='#3caf74'
+									btnText='Elige desde la galeria'
+									onPress={() => pickFromGallery(onChange)}
+								/>
+								<CustomButton
+									btnBgColor='#3caf74'
+									btnText='Toma una foto'
+									onPress={() => takePhoto(onChange)}
+								/>
+								{value && (
+									<Image
+										source={{ uri: value }}
+										style={styles.image}
+									/>
+								)}
 							</>
 						)}
 					/>
@@ -198,6 +212,6 @@ const styles = StyleSheet.create({
 		height: 200,
 		borderRadius: 15,
 		padding: 10,
-		resizeMode: 'center'
-	}
+		resizeMode: 'center',
+	},
 });
