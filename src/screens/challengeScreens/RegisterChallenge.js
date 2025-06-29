@@ -5,21 +5,20 @@ import { SafeAreaView, ScrollView, StyleSheet, View, Alert } from 'react-native'
 import { Button } from '../../components/Button';
 import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
 
 export function RegisterChallenge({route, navigation}) {
 	const {user} = useContext(AuthContext);
-	const {challenge} = route.params;
-
-	console.log('usuario:', user);
+	const {challenge} = route.params; //Para poder editar un reto
 
 	const {
 		control,
 		handleSubmit,
+		setValue,
 		formState: { errors },
-	} = useForm(/*{
+	} = useForm({
 		defaultValues: {
 			nombreReto: '',
 			descripcion: '',
@@ -27,7 +26,13 @@ export function RegisterChallenge({route, navigation}) {
 			fechaLimite: '',
 			puntaje: ''
 		}
-	}*/);
+	});
+
+	useEffect(() => {
+		if (challenge != null) {
+			//setValue
+		}
+	})
 
 	const registerChallenge = async (challenge) => {
 		const existe = await AsyncStorage.getItem(

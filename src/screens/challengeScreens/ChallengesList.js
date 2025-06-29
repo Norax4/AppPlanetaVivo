@@ -2,7 +2,6 @@ import {
 	StyleSheet,
 	View,
 	SafeAreaView,
-	ScrollView,
 	Text,
 	FlatList,
 } from 'react-native';
@@ -30,7 +29,7 @@ export function ChallengesList({ navigation }) {
 					onPress={() =>
 						navigation.navigate('SelectedChallenge', { challenge: object })
 					}
-					btnText={object.nombreReto}
+					btnText='Participar'
 					btnBgColor='#6892d5'
 				/>
 			</View>
