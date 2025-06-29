@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { FormInputNumber } from '../../components/FormInputNumber';
 import { FormInputText } from '../../components/FormInputText';
-import { Button } from '../../components/Button';
+import { CustomButton } from '../../components/CustomButton';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
@@ -169,7 +169,7 @@ export function RegisterUser({ navigation }) {
 						</Text>
 					)}
 
-					<Button
+					<CustomButton
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
 						btnText='Enviar'

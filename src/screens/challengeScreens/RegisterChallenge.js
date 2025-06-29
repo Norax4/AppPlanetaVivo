@@ -2,9 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, StyleSheet, View, Alert } from 'react-native';
 
-import { Button } from '../../components/Button';
+import { CustomButton } from '../../components/CustomButton';
 import { FormDropDown } from '../../components/FormDropDown';
+import { FormDatePicker } from '../../components/FormDatePicker';
 import { FormInputText } from '../../components/FormInputText';
+import { FormInputTextArea } from '../../components/FormInputTextArea';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
@@ -93,31 +95,30 @@ export function RegisterChallenge({route, navigation}) {
 						errors={errors}
 					/>
 
-					<FormInputText
+					<FormInputTextArea
 						control={control}
 						controllerName='descripcion'
 						requiredMessage='La descripción es requerida'
 						patternValue={/[A-Za-z0-9]+/}
 						patternMessage='Debe ingresar una descripción válida'
 						inputPlaceHolder='Descripción'
+						numberOfLines={6}
 						errors={errors}
 					/>
 
 					<FormDropDown
 						control={control}
-						controllerName='reto'
-						requiredMessage='El reto es requerido'
+						controllerName='categoriaReto'
+						requiredMessage='La categoría es requerida'
 						data={categoriasMateriales}
-						dropDownPlaceholder='Seleccione el tipo de reto'
+						dropDownPlaceholder='Seleccione la categoría'
 						errors={errors}
 					/>
 
-					{/* Actualizar a un DatePicker */}
-					<FormInputText
+					<FormDatePicker
 						control={control}
 						controllerName='fechaLimite'
 						requiredMessage='Una fecha es requerida'
-						inputPlaceHolder='Fecha limite'
 						errors={errors}
 					/>
 
@@ -131,7 +132,7 @@ export function RegisterChallenge({route, navigation}) {
 						errors={errors}
 					/>
 
-					<Button
+					<CustomButton
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
 						btnText='Ingresar'

@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import { FormInputText } from '../../components/FormInputText';
 import { AuthContext } from '../../database/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from '../../components/Button';
+import { CustomButton } from '../../components/CustomButton';
 import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';
 
 //Componente donde el usuario sube su participación a un reto elegido
@@ -103,7 +103,7 @@ export function SelectedChallenge({route, navigation}) {
                             <Text style={{fontSize: 20, textAlign: 'center'}}>
                                 ¿Quieres editar tu reto?
                             </Text>
-                            <Button
+                            <CustomButton
                                 btnBgColor='#6892d5'
                                 btnText='Editar Reto'
                                 onPress={() => navigation.navigate('RegisterChallenge', {challenge: challenge})}
@@ -126,11 +126,11 @@ export function SelectedChallenge({route, navigation}) {
                                 }}
                                 render={({ field: { onChange, value } }) => (
                                     <>
-                                        <Button 
+                                        <CustomButton 
                                         btnBgColor="#3caf74"
                                         btnText="Elige desde la galeria" 
                                         onPress={() => pickFromGallery(onChange)} />
-                                        <Button 
+                                        <CustomButton 
                                         btnBgColor="#3caf74"
                                         btnText="Toma una foto" 
                                         onPress={() => takePhoto(onChange)} />
@@ -154,7 +154,7 @@ export function SelectedChallenge({route, navigation}) {
                                 errors={errors}
                             />
                         
-                            <Button
+                            <CustomButton
                                 btnBgColor='#6892d5'
                                 btnText='Enviar'
                                 onPress={handleSubmit(onSubmit)}

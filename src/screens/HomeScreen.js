@@ -6,7 +6,7 @@ import {
 	ScrollView,
 	ActivityIndicator,
 } from 'react-native';
-import { Button } from '../components/Button';
+import { CustomButton } from '../components/CustomButton';
 import { AuthContext } from '../database/authContext';
 
 export function HomeScreen({ navigation }) {
@@ -32,7 +32,7 @@ export function HomeScreen({ navigation }) {
 				<ScrollView style={styles.scrollView}>
 					{user == null ? (
 						<>
-							<Button
+							<CustomButton
 								onPress={() =>
 									navigation.navigate('RegisterUser')
 								}
@@ -40,7 +40,7 @@ export function HomeScreen({ navigation }) {
 								btnText={'Registrar Usuario'}
 							/>
 
-							<Button
+							<CustomButton
 								onPress={() => navigation.navigate('LoginUser')}
 								btnBgColor={'#6892d5'}
 								btnText={'Ingrese a su cuenta'}
@@ -48,21 +48,21 @@ export function HomeScreen({ navigation }) {
 						</>
 					) : (
 						<>
-							<Button
+							<CustomButton
 								onPress={() =>
 									navigation.navigate('RegisterChallenge')
 								}
 								btnBgColor={'#6892d5'}
 								btnText={'Registro de retos'}
 							/>
-							<Button
+							<CustomButton
 								onPress={() =>
 									navigation.navigate('ChallengesList')
 								}
 								btnBgColor={'#6892d5'}
 								btnText={'Lista de retos'}
 							/>
-							<Button
+							<CustomButton
 								onPress={() =>
 									navigation.navigate(
 										'RegisterRecyclableMaterials'
@@ -71,12 +71,12 @@ export function HomeScreen({ navigation }) {
 								btnBgColor={'#6892d5'}
 								btnText={'Registrar materiales reciclables'}
 							/>
-							<Button
+							<CustomButton
 								onPress={() => navigation.navigate('UserPanel')}
 								btnBgColor={'#6892d5'}
 								btnText={'Panel de usuario'}
 							/>
-							<Button
+							<CustomButton
 								onPress={() => logout()}
 								btnBgColor={'#ff8c94'}
 								btnText={'Cerrar sesión'}

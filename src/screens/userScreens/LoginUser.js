@@ -8,7 +8,7 @@ import {
 	View,
 } from 'react-native';
 
-import { Button } from '../../components/Button';
+import { CustomButton } from '../../components/CustomButton';
 import { FormInputText } from '../../components/FormInputText';
 import { AuthContext } from '../../database/authContext';
 
@@ -75,7 +75,7 @@ export function LoginUser({ navigation }) {
 						secureTextEntry={true}
 					/>
 
-					<Button
+					<CustomButton
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
 						btnText='Ingresar'

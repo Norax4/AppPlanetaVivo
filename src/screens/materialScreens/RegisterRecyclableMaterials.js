@@ -4,7 +4,9 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Alert } from '
 import { useContext } from 'react';
 
 import { AuthContext } from '../../database/authContext';
-import { Button } from '../../components/Button';
+
+import { Alert } from 'react-native';
+import { CustomButton } from '../../components/CustomButton';
 import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';
 import { categoriasMateriales } from '../../database/categories';
@@ -114,7 +116,7 @@ export function RegisterRecMats({ navigation }) {
 						</Text>
 					)}
 
-					<Button
+					<CustomButton
 						btnBgColor='#6892d5'
 						onPress={handleSubmit(onSubmit)}
 						btnText='Ingresar'
