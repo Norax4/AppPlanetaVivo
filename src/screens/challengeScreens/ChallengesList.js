@@ -1,22 +1,27 @@
+import * as Location from 'expo-location';
+import { useContext } from 'react';
 import {
-	StyleSheet,
-	View,
-	SafeAreaView,
-	Text,
+	Alert,
+	Button,
 	FlatList,
 	Modal,
-	Button,
-	Alert,
-	ScrollView
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+	View,
 } from 'react-native';
-import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useEffect, useState } from 'react';
 import { InputTextArea } from '../../components/InputTextArea';
 import { Reto } from '../../components/Reto';
-import { useEffect, useState } from 'react';
+import { AuthContext } from '../../database/authContext';
 import { fetchAllChallenges } from '../../database/fetchFunctions';
 
 export function ChallengesList({ navigation }) {
+	const { user } = useContext(AuthContext);
+
 	const [challenges, setChallenges] = useState([]);
 
 	const [modalVisible, setModalVisible] = useState(false);
@@ -43,10 +48,41 @@ export function ChallengesList({ navigation }) {
 
 			const loc = await Location.getCurrentPositionAsync({});
 			setUbicacion(loc.coords);
+			//console.log('Ubicacion: ' + ubicacion);
 			// Para guardar luego en AsyncStorage:
-			console.log('Comentario:', comentario);
-			console.log('Ubicación:', loc.coords);
-			console.log('Reto:', retoSeleccionado);
+
+			const info = {
+				usuario: {
+					email: user.email,
+					nombreUser: user.nombreUser,
+				},
+				reto: {
+					nombre: retoSeleccionado.nombreReto,
+					puntaje: retoSeleccionado.puntaje,
+				},
+				comentario: comentario,
+				ubicacion: {
+					latitud: loc.coords.latitude,
+					longitud: loc.coords.longitude,
+				},
+				estado: 'pendiente',
+			};
+
+			const key = `participacion_${retoSeleccionado.nombreReto}_${user.email}`;
+
+			const existe = await AsyncStorage.getItem(key);
+			if (existe) {
+				Alert.alert('Error', 'Ya has participado en este reto.');
+				return;
+			}
+
+			console.log('Key: ' + key);
+
+			console.log('Input completo: ' + JSON.stringify(info));
+
+			await AsyncStorage.setItem(key, JSON.stringify(info));
+
+			//return { ok: true };
 
 			Alert.alert(
 				'Registrado exitosamente',
@@ -65,11 +101,11 @@ export function ChallengesList({ navigation }) {
 	};
 
 	useEffect(() => {
-        const fetch = async () => {
-            const data = await fetchAllChallenges();
-            setChallenges(data);
-        }
-        fetch();
+		const fetch = async () => {
+			const data = await fetchAllChallenges();
+			setChallenges(data);
+		};
+		fetch();
 	}, []);
 
 	return (
@@ -141,12 +177,11 @@ export function ChallengesList({ navigation }) {
 							<InputTextArea
 								placeholder='Escribe un comentario'
 								value={comentario}
-								onChangeText={setComentario}
+								onChange={setComentario}
 								numberOfLines={4}
 							/>
 						</View>
 
-						{/* Intente usar touchable opacity y no logre que se viera bien */}
 						<Button
 							title='Confirmar participación'
 							onPress={confirmarParticipar}
