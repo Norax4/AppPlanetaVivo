@@ -13,7 +13,6 @@ import { useContext } from 'react';
 
 import { AuthContext } from '../../database/authContext';
 
-import { Alert } from 'react-native';
 import { CustomButton } from '../../components/CustomButton';
 import { FormDropDown } from '../../components/FormDropDown';
 import { FormInputText } from '../../components/FormInputText';

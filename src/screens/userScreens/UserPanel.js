@@ -5,7 +5,7 @@ import {
 	SafeAreaView,
 	FlatList,
 	ScrollView,
-	Alert,
+	Image,
 } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../database/authContext';
@@ -19,7 +19,7 @@ import {
 export function UserPanel({ navigation }) {
 	const { user } = useContext(AuthContext);
 	const puntos = user.points;
-	const nivel = puntos ? Math.floor(puntos / 100) : 1;
+	const nivel = Math.floor(puntos / 100) + 1;
 	const [listState, setListState] = useState('creado');
 	const [createdChallenges, setCreatedChall] = useState([]);
 	const [partakenChallenges, setPartakenChall] = useState([]);
@@ -87,14 +87,13 @@ export function UserPanel({ navigation }) {
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
 				<ScrollView style={styles.scrollView}>
-					{/* usar <Image /> para la imagen aqui */}
+
+					<Image source={{ uri: (user.imagenUser) }} style={styles.image}/>
 					<Text style={styles.nameText}>{user.nombreUser}</Text>
 					<Text style={styles.nivelText}>Nivel {nivel}</Text>
-					<Text style={styles.propText}>Puntos: {puntos}</Text>
-					<Progress.Bar progress={1} /*placeholder */ width={345} />
+					<Progress.Bar progress={(puntos % 100) / 100} width={345} />
 					{/*Agregar un gráfico de retos por semana y mes con Victory Native oRecharts
-				Agregar retos completados por el usuario*/}
-					{/* Poner boton de logout aqui? */}
+					Agregar retos completados por el usuario*/}
 
 					<View
 						style={{
@@ -130,14 +129,6 @@ export function UserPanel({ navigation }) {
 						keyExtractor={(item) => item.nombreReto}
 					/>
 				)}
-
-				{/*<ScrollView style={styles.scrollView}>
-					<CustomButton 
-						btnText="Eliminar cuenta"
-						btnBgColor='#ff8c94'
-						onPress={deleteAccount()}
-					/>
-				</ScrollView>*/}
 			</View>
 		</SafeAreaView>
 	);
@@ -170,16 +161,20 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		textAlign: 'center',
 	},
-	/*error: {
-		color: 'red',
-		marginTop: 5,
-		fontWeight: 650,
-		fontSize: 16,
-	},*/
 	itemView: {
 		backgroundColor: '#f4fffb',
 		padding: 20,
 		marginVertical: 8,
 		marginHorizontal: 16,
 	},
+	image: {
+		width: 120,
+		height: 120,
+		borderRadius: 60,
+		alignSelf: 'center',
+		marginBottom: 5,
+		marginTop: 30,
+		borderColor: '#f4fffb',
+		borderWidth: 3
+	}
 });

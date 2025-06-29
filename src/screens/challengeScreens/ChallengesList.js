@@ -7,6 +7,7 @@ import {
 	Modal,
 	Button,
 	Alert,
+	ScrollView
 } from 'react-native';
 import * as Location from 'expo-location';
 

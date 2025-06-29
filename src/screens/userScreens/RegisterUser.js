@@ -149,7 +149,7 @@ export function RegisterUser({ navigation }) {
 						errors={errors}
 					/>
 
-					<Text>Elige una foto de perfil</Text>
+					<Text style={{fontSize: 20, marginTop: 15}}>¡Elige tu foto de perfil!</Text>
 					<Controller
 						control={control}
 						name='imagenUser'
@@ -210,7 +210,8 @@ const styles = StyleSheet.create({
 	image: {
 		width: 200,
 		height: 200,
-		borderRadius: 15,
+		borderRadius: 30,
+		margin: 10,
 		padding: 10,
 		resizeMode: 'center',
 	},

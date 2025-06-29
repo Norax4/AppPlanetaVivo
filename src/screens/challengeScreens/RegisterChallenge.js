@@ -12,8 +12,8 @@ import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
 
 export function RegisterChallenge({route, navigation}) {
-	const {user} = useContext(AuthContext);
-	const {challenge} = route.params; //Para poder editar un reto
+	const { user } = useContext(AuthContext);
+	const { challenge } = route.params ? route.params : ""; //Para poder editar un reto
 
 	const {
 		control,
@@ -36,23 +36,25 @@ export function RegisterChallenge({route, navigation}) {
 		}
 	})
 
-	const registerChallenge = async (challenge) => {
+	const registerChallenge = async (challengeSet) => {
 		const existe = await AsyncStorage.getItem(
-			challenge.nombreReto.toLowerCase()
+			challengeSet.nombreReto.toLowerCase()
 		);
-		if (existe) throw new Error('El reto ya existe');
+		if (existe) {
+			Alert.alert('Error','El reto ya existe');
+		}
 
 		const extraInfo = {
 			usuario: { nombreUser: user.nombreUser, email: user.email },
 		};
 
 		const completeChallenge = {
-			...challenge,
+			...challengeSet,
 			...extraInfo,
 		};
 
 		await AsyncStorage.setItem(
-			challenge.nombreReto,
+			challengeSet.nombreReto,
 			JSON.stringify(completeChallenge)
 		);
 
