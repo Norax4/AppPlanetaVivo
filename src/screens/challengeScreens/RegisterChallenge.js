@@ -58,7 +58,11 @@ export function RegisterChallenge({ route, navigation }) {
 			const keys = await AsyncStorage.getAllKeys();
 			key = keys.find((k) => k.indexOf(challenge.nombreReto) !== -1);
 		} else {
-			key = `reto_${challengeData.nombreReto}_${user.email}`;
+			const sanitize = (str) => str.toLowerCase().replace(/\s+/g, '_');
+
+			key = `reto_${sanitize(challengeData.nombreReto)}_${sanitize(
+				user.email
+			)}`;
 		}
 
 		await AsyncStorage.setItem(key, JSON.stringify(completeChallenge));
