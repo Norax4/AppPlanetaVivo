@@ -215,7 +215,7 @@ export function UserPanel({ navigation }) {
 						contentContainerStyle={{ paddingHorizontal: 20 }}
 						data={createdChallenges}
 						renderItem={({ item }) => <Item object={item} />}
-						keyExtractor={(item) => item.id}
+						keyExtractor={(item) => item.nombreReto}
 					/>
 				) : (
 					<FlatList
@@ -223,7 +223,7 @@ export function UserPanel({ navigation }) {
 						contentContainerStyle={{ paddingHorizontal: 20 }}
 						data={partakenChallenges}
 						renderItem={({ item }) => <Item object={item} />}
-						keyExtractor={(item) => item.id}
+						keyExtractor={(item) => item.nombreReto}
 					/>
 				)}
 			</View>

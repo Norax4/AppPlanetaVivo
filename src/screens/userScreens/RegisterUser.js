@@ -213,6 +213,6 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		margin: 10,
 		padding: 10,
-		resizeMode: 'center',
+		alignSelf: 'center',
 	},
 });
