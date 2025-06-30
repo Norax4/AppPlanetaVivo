@@ -10,9 +10,12 @@ import {
 	StyleSheet,
 	Text,
 	View,
+	Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Controller, useForm } from 'react-hook-form';
 
+import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';
 import { useEffect, useState } from 'react';
 import { InputTextArea } from '../../components/InputTextArea';
 import { Reto } from '../../components/Reto';
@@ -27,14 +30,19 @@ export function ChallengesList({ navigation }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [retoSeleccionado, setRetoSeleccionado] = useState(null);
 	const [comentario, setComentario] = useState('');
-	const [ubicacion, setUbicacion] = useState(null);
+
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm();
 
 	const openModal = (reto) => {
 		setRetoSeleccionado(reto);
 		setModalVisible(true);
 	};
 
-	const confirmarParticipar = async () => {
+	const confirmarParticipar = async (data) => {
 		try {
 			const { status } =
 				await Location.requestForegroundPermissionsAsync();
@@ -46,10 +54,7 @@ export function ChallengesList({ navigation }) {
 				return;
 			}
 
-			const loc = await Location.getCurrentPositionAsync({});
-			setUbicacion(loc.coords);
-			//console.log('Ubicacion: ' + ubicacion);
-			// Para guardar luego en AsyncStorage:
+			const location = await Location.getCurrentPositionAsync({});
 
 			const info = {
 				usuario: {
@@ -61,14 +66,19 @@ export function ChallengesList({ navigation }) {
 					puntaje: retoSeleccionado.puntaje,
 				},
 				comentario: comentario,
+				imagen: data.imagenPrueba,
 				ubicacion: {
-					latitud: loc.coords.latitude,
-					longitud: loc.coords.longitude,
+					latitud: location.coords.latitude,
+					longitud: location.coords.longitude,
 				},
 				estado: 'pendiente',
 			};
 
-			const key = `participacion_${retoSeleccionado.nombreReto}_${user.email}`;
+			const sanitize = (str) => str.toLowerCase().replace(/\s+/g, '_');
+
+			const key = `participacion_${sanitize(
+				retoSeleccionado.nombreReto
+			)}_${sanitize(user.email)}`;
 
 			const existe = await AsyncStorage.getItem(key);
 			if (existe) {
@@ -86,9 +96,9 @@ export function ChallengesList({ navigation }) {
 
 			Alert.alert(
 				'Registrado exitosamente',
-				`Comentario: ${comentario}\nUbicación: ${loc.coords.latitude.toFixed(
+				`Comentario: ${comentario}\nUbicación: ${location.coords.latitude.toFixed(
 					4
-				)}, ${loc.coords.longitude.toFixed(4)}`
+				)}, ${location.coords.longitude.toFixed(4)}`
 			);
 		} catch (err) {
 			console.error('Error al obtener ubicación', err);
@@ -96,13 +106,12 @@ export function ChallengesList({ navigation }) {
 		} finally {
 			setModalVisible(false);
 			setComentario('');
-			setUbicacion(null);
 		}
 	};
 
 	useEffect(() => {
 		const fetch = async () => {
-			const data = await fetchAllChallenges();
+			const data = (await fetchAllChallenges()) || [];
 			setChallenges(data);
 		};
 		fetch();
@@ -117,20 +126,18 @@ export function ChallengesList({ navigation }) {
 						contentContainerStyle={{ paddingHorizontal: 20 }}
 						data={challenges}
 						renderItem={({ item, index }) => (
-							<View key={index}>
-								<Reto
-									nombreReto={item.nombreReto}
-									categoriaReto={item.categoriaReto}
-									fechaLimiteReto={new Date(
-										item.fechaLimite
-									).toLocaleDateString('es-UY')}
-									puntajeReto={item.puntaje}
-									descripcionReto={item.descripcion}
-									onPress={() => openModal(item)}
-								/>
-							</View>
+							<Reto
+								key={index}
+								nombreReto={item.nombreReto}
+								categoriaReto={item.categoriaReto}
+								fechaLimiteReto={new Date(
+									item.fechaLimite
+								).toLocaleDateString('es-UY')}
+								puntajeReto={item.puntaje}
+								descripcionReto={item.descripcion}
+								onPress={() => openModal(item)}
+							/>
 						)}
-						keyExtractor={(item) => item.id}
 					/>
 				) : (
 					<ScrollView style={styles.scrollView}>
@@ -182,15 +189,77 @@ export function ChallengesList({ navigation }) {
 							/>
 						</View>
 
-						<Button
-							title='Confirmar participación'
-							onPress={confirmarParticipar}
+						<Controller
+							control={control}
+							name='imagenPrueba'
+							rules={{
+								required: 'Una imagen de prueba es requerida',
+							}}
+							render={({ field: { onChange, value } }) => (
+								<View>
+									<View
+										style={{
+											alignItems: 'center',
+											marginBottom: 10,
+										}}
+									>
+										<Image
+											source={
+												value
+													? { uri: value }
+													: require('../../../assets/imagePlaceholder .jpg')
+											}
+											style={styles.image}
+										/>
+									</View>
+
+									<View style={styles.modalButtonView}>
+										<Button
+											title='Elige desde la galeria'
+											onPress={() =>
+												pickFromGallery(onChange)
+											}
+										/>
+									</View>
+
+									<View style={styles.modalButtonView}>
+										<Button
+											title='Toma una foto'
+											onPress={() => takePhoto(onChange)}
+										/>
+									</View>
+								</View>
+							)}
 						/>
-						<Button
-							title='Cancelar'
-							onPress={() => setModalVisible(false)}
-							color='gray'
-						/>
+
+						{errors.imagenPrueba && (
+							<Text style={styles.error}>
+								{errors.imagenPrueba.message}
+							</Text>
+						)}
+
+						<View
+							style={{
+								borderTopWidth: 2,
+								borderTopColor: '#ccc',
+								paddingTop: 7,
+							}}
+						>
+							<View style={styles.modalButtonView}>
+								<Button
+									title='Confirmar participación'
+									onPress={handleSubmit(confirmarParticipar)}
+								/>
+							</View>
+
+							<View style={styles.modalButtonView}>
+								<Button
+									title='Cancelar'
+									onPress={() => setModalVisible(false)}
+									color='gray'
+								/>
+							</View>
+						</View>
 					</View>
 				</View>
 			</Modal>
@@ -213,7 +282,8 @@ const styles = StyleSheet.create({
 	},
 	error: {
 		color: 'red',
-		marginTop: 5,
+		marginVertical: 10,
+
 		fontWeight: 650,
 		fontSize: 16,
 	},
@@ -224,5 +294,15 @@ const styles = StyleSheet.create({
 		padding: 3,
 		paddingHorizontal: 10,
 		borderRadius: 3,
+	},
+	image: {
+		width: 200,
+		height: 200,
+		borderRadius: 15,
+		padding: 10,
+		resizeMode: 'center',
+	},
+	modalButtonView: {
+		marginBottom: 7,
 	},
 });

@@ -10,7 +10,7 @@ import { CustomButton } from '../components/CustomButton';
 import { AuthContext } from '../database/authContext';
 
 export function HomeScreen({ navigation }) {
-	const { user, loading, logout } = useContext(AuthContext);
+	const { user, loading, logout, clearStorage } = useContext(AuthContext);
 
 	if (loading) {
 		return (
@@ -44,6 +44,11 @@ export function HomeScreen({ navigation }) {
 								onPress={() => navigation.navigate('LoginUser')}
 								btnBgColor={'#6892d5'}
 								btnText={'Ingrese a su cuenta'}
+							/>
+							<CustomButton
+								onPress={() => clearStorage()}
+								btnBgColor={'#ff8c94'}
+								btnText={'Limpiar async storage'}
 							/>
 						</>
 					) : (

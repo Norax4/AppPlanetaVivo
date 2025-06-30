@@ -1,6 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm } from 'react-hook-form';
-import { SafeAreaView, ScrollView, StyleSheet, View, Alert } from 'react-native';
+import {
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	View,
+	Alert,
+} from 'react-native';
 
 import { CustomButton } from '../../components/CustomButton';
 import { FormDropDown } from '../../components/FormDropDown';
@@ -11,9 +17,9 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../database/authContext';
 import { categoriasMateriales } from '../../database/categories';
 
-export function RegisterChallenge({route, navigation}) {
+export function RegisterChallenge({ route, navigation }) {
 	const { user } = useContext(AuthContext);
-	const { challenge } = route.params ? route.params : ""; //Para poder editar un reto
+	const { challenge } = route.params ? route.params : ''; //Para poder editar un reto
 
 	const {
 		control,
@@ -24,24 +30,24 @@ export function RegisterChallenge({route, navigation}) {
 		defaultValues: {
 			nombreReto: '',
 			descripcion: '',
-			categoria: '',
+			categoriaReto: '',
 			fechaLimite: '',
-			puntaje: ''
-		}
+			puntaje: '',
+		},
 	});
 
 	useEffect(() => {
 		if (challenge != null) {
 			//setValue
 		}
-	})
+	});
 
 	const registerChallenge = async (challengeSet) => {
 		const existe = await AsyncStorage.getItem(
 			challengeSet.nombreReto.toLowerCase()
 		);
 		if (existe) {
-			Alert.alert('Error','El reto ya existe');
+			Alert.alert('Error', 'El reto ya existe');
 		}
 
 		const extraInfo = {

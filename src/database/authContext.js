@@ -25,6 +25,11 @@ export const AuthProvider = ({ children }) => {
 		loadUser();
 	}, []);
 
+	//Quitar luego, solo a modo de prueba
+	const clearStorage = async () => {
+		await AsyncStorage.clear();
+	};
+
 	const login = async (email, password) => {
 		if (user != null) {
 			//Si ya hay un usuario loggeado automaticamente
@@ -68,7 +73,9 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, login, logout, loading }}>
+		<AuthContext.Provider
+			value={{ user, login, logout, loading, clearStorage }}
+		>
 			{children}
 			{/*Todos los componentes dentro de AuthProvider, ver App.js*/}
 		</AuthContext.Provider>
