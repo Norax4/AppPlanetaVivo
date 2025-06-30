@@ -146,34 +146,44 @@ export function UserPanel({ navigation }) {
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<View style={styles.view}>
-				<ScrollView style={styles.scrollView}>
+				<FlatList
+					style={{ marginBottom: 100 }}
+					contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 10 }}
+					data={listState === 'creado' ? createdChallenges : partakenChallenges}
+					renderItem={({ item }) => <Item object={item} />}
+					keyExtractor={(item) => item.nombreReto}
+					ListHeaderComponent={
+						<>
+						<Image source={{ uri: user.imagenUser }} style={styles.image} />
+						<Text style={styles.nameText}>{user.nombreUser}</Text>
+						<Text style={styles.nivelText}>Nivel {nivel}</Text>
+						<Progress.Bar
+							progress={(puntos % 100) / 100}
+							width={305}
+							style={{ marginBottom: 10, marginHorizontal: 30 }}
+						/>
 
-					<Image source={{ uri: (user.imagenUser) }} style={styles.image}/>
-					<Text style={styles.nameText}>{user.nombreUser}</Text>
-					<Text style={styles.nivelText}>Nivel {nivel}</Text>
-					<Progress.Bar progress={(puntos % 100) / 100} width={345} />
-					{/*Agregar un gráfico de retos por semana y mes con Victory Native oRecharts
-					Agregar retos completados por el usuario*/}
-
-					<View
-						style={{
+						<View
+							style={{
 							height: 2,
 							width: '100%',
 							backgroundColor: '#000000',
 							marginVertical: 10,
-						}}
-					/>
+							}}
+						/>
 
-					<CustomButton
-						btnBgColor='#6892d5'
-						btnText={
+						<CustomButton
+							btnBgColor="#6892d5"
+							btnText={
 							listState === 'creado'
 								? 'Ver participaciones'
 								: 'Ver retos creados'
-						}
-						onPress={() => changeList()}
+							}
+							onPress={changeList}
+						/>
+						</>
+					}
 					/>
-				</ScrollView>
 
 				<Modal
 					visible={modalVisible}
@@ -216,24 +226,6 @@ export function UserPanel({ navigation }) {
 						</View>
 					</View>
 				</Modal>
-
-				{listState === 'creado' ? (
-					<FlatList
-						style={{ marginBottom: 100 }}
-						contentContainerStyle={{ paddingHorizontal: 20 }}
-						data={createdChallenges}
-						renderItem={({ item }) => <Item object={item} />}
-						keyExtractor={(item) => item.nombreReto}
-					/>
-				) : (
-					<FlatList
-						style={{ marginBottom: 100 }}
-						contentContainerStyle={{ paddingHorizontal: 20 }}
-						data={partakenChallenges}
-						renderItem={({ item }) => <Item object={item} />}
-						keyExtractor={(item) => item.nombreReto}
-					/>
-				)}
 			</View>
 		</SafeAreaView>
 	);
@@ -250,6 +242,7 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginHorizontal: 30,
+		flexGrow: 1
 	},
 	nameText: {
 		margin: 10,
