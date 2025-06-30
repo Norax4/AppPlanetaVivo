@@ -54,7 +54,7 @@ export function RootStack() {
 				<Stack.Screen 
 					name='SelectedChallenge'
 					component={SelectedChallenge}
-					options={{ title: 'Reto seleccionado'}}
+					options={{ title: 'Participación'}}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

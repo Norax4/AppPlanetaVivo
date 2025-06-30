@@ -68,8 +68,6 @@ export function UserPanel({ navigation }) {
 
 			await AsyncStorage.removeItem(key);
 
-			console.log(key);
-
 			Alert.alert('Éxito', 'Item eliminado correctamente');
 		} catch (error) {
 			console.error('Error eliminando item:', error);
@@ -99,6 +97,14 @@ export function UserPanel({ navigation }) {
 				>
 					{object.nombreReto}
 				</Text>
+				<Text 
+					style={{fontSize: 15,
+					fontWeight: 700,
+					color: '#fff',
+					marginVertical: 5}}
+				>
+					{object.descripcion}
+				</Text>
 				
 				{listState === 'creado' ? (
 					<View style={{marginBottom: 10}}>
@@ -121,15 +127,17 @@ export function UserPanel({ navigation }) {
 						/>
 					</View>
 				) : (
-					<CustomButton
-						onPress={() =>
-							navigation.navigate('SelectedChallenge', {
-								challenge: object,
-							})
-						}
-						btnText='Ver reto'
-						btnBgColor='#6892d5'
-					/>
+					<View style={{marginBottom: 10}}>
+						<CustomButton
+							onPress={() =>
+								navigation.navigate('SelectedChallenge', {
+									challenge: object,
+								})
+							}
+							btnText='Ver participación'
+							btnBgColor='#6892d5'
+						/>
+					</View>
 				)}
 			</View>
 		);
@@ -160,8 +168,8 @@ export function UserPanel({ navigation }) {
 						btnBgColor='#6892d5'
 						btnText={
 							listState === 'creado'
-								? 'Ver retos creados'
-								: 'Ver participaciones'
+								? 'Ver participaciones'
+								: 'Ver retos creados'
 						}
 						onPress={() => changeList()}
 					/>

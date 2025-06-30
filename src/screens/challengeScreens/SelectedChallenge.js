@@ -1,165 +1,71 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, SafeAreaView, ScrollView, Text, Alert, Image } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import * as Location from 'expo-location';
-import { FormInputText } from '../../components/FormInputText';
+import { StyleSheet, View, SafeAreaView, ScrollView, Text, Image } from 'react-native';
 import { AuthContext } from '../../database/authContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustomButton } from '../../components/CustomButton';
-import { pickFromGallery, takePhoto } from '../../database/asyncPermissions';
+import { fetchAllChallInputs } from '../../database/fetchFunctions';
 
 //Componente donde el usuario sube su participación a un reto elegido
 export function SelectedChallenge({route, navigation}) {
     const { user } = useContext(AuthContext);
-    const { challenge } = route.params; //objeto 
-
-    const {
-		control,
-		handleSubmit,
-        setValue,
-		formState: { errors },
-	} = useForm();
+    const { challenge } = route.params; //objeto
+    const [input, setInput] = useState("");
 
     useEffect(() => {
-        const addCurrentLocation = async () => {
-            const {status} = await Location.requestForegroundPermissionsAsync();
-            if (status === 'granted') {
-                const loc = await Location.getCurrentPositionAsync({});
-                setValue('location', {
-                    id: Date.now().toString(),
-                    lat: loc.coords.latitude,
-                    long: loc.coords.longitude,
-                    time: new Date().toLocaleDateString()
-                })
-            } else {
-                Alert.alert("Permiso denegado", "Activa la ubicación para continuar."
-                    [{ text: 'OK', onPress: () => navigation.navigate('HomeScreen')}]
-                );
-                return;
-            }
+        const fetch = async () => {
+            const data2 = await fetchAllChallInputs();
+			const participation =
+				data2.find((input) => input.reto.nombre === challenge.nombreReto 
+                && input.usuario.email === user.email);
+            setInput(participation);
         }
-        addCurrentLocation();
+        fetch();
     }, []);
 
-    const registerParticipation = async (input) => {
-        const existe = await AsyncStorage.getItem(input.location.id);
-        if (existe) {
-            Alert.alert("Error", "Ya has participado en este reto.");
-        }
-
-        const extraInfo = {
-            usuario: {
-                email: user.email,
-                nombreUser: user.nombreUser
-            },
-            reto: {
-                nombre: challenge.nombreReto,
-                puntaje: challenge.puntaje
-            }
-        };
-
-        const completeInput = {
-            ...input, ...extraInfo
-        }
-
-        console.log(completeInput);
-        await AsyncStorage.setItem(input.location.id, JSON.stringify(completeInput));
-
-        return {ok: true};
-    }
-
-    const onSubmit = async (data) => {
-        console.log(data);
-        
-        try {
-			await registerParticipation(data)
-
-			Alert.alert("Exito", "Tu participación fue subida exitosamente",
-				[{text: 'OK', onPress: () => navigation.navigate('HomeScreen')}]
-			);
-		} catch (err) {
-			console.error(err);
-			Alert.alert(
-				'Error',
-				err.message || 'No se pudo enviar tu participación.',
-				[{ text: 'OK' }]
-			);
-		}
-    }
+    console.log(input);
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
             <View style={styles.view}>
                 <ScrollView style={styles.scrollView}>
-                    <View style={{margin: 10}}>
-                        <Text style={{fontSize: 25, alignContent: 'center'}}>{challenge.nombreReto}</Text>
-                        <Text style={{fontSize: 15, alignContent: 'justify'}}>{challenge.descripcion}</Text>
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 30, alignContent: 'center'}}>{challenge.nombreReto}</Text>
+
+                        <Text style={{fontSize: 20, alignContent: 'justify'}}>
+                            Descripción:
+                        </Text>
+                        <Text style={{fontSize: 20, alignContent: 'justify'}}>
+                            {challenge.descripcion}
+                        </Text>
+                        <Text style={{marginTop: 5}}>
+                            {challenge.usuario.nombreUser}
+                        </Text>
                     </View>
 
                     <View style={{height: 2, width: '100%', backgroundColor: '#000000', marginVertical: 10}}/>
                     
-                    {/*challenge.usuario.nombreUser === user.nombreUser ? (
-                        <>
-                            <Text style={{fontSize: 20, textAlign: 'center'}}>
-                                ¿Quieres editar tu reto?
-                            </Text>
-                            <CustomButton
-                                btnBgColor='#6892d5'
-                                btnText='Editar Reto'
-                                onPress={() => navigation.navigate('RegisterChallenge', {challenge: challenge})}
-                            />
-                        </>
-                    ) : () Evitar que los creadores participen en sus propios retos*/}
-                        <>
-                            <Text style={{fontSize: 25}}>
-                                ¡Participa en el Reto!
-                            </Text>
+                    <View style={{margin: 10}}>
+                        <Text style={{fontSize: 20, textAlign: 'center', marginBottom: 20}}>
+                            ¡Tu participación!
+                        </Text>
 
-                            <Text style={{fontSize: 15, marginTop: 10}}>
-                                ¡Agrega la imagen para probar tu reto!
-                            </Text>
-                            <Controller
-                                control={control}
-                                name='imagenComplete'
-                                rules={{
-                                    required: 'Una imagen es requerida',
-                                }}
-                                render={({ field: { onChange, value } }) => (
-                                    <>
-                                        <CustomButton 
-                                        btnBgColor="#3caf74"
-                                        btnText="Elige desde la galeria" 
-                                        onPress={() => pickFromGallery(onChange)} />
-                                        <CustomButton 
-                                        btnBgColor="#3caf74"
-                                        btnText="Toma una foto" 
-                                        onPress={() => takePhoto(onChange)} />
-                                        {value && <Image source={{ uri: value }} style={styles.image} />}
-                                    </>
-                                )}
-                            />
-                            {errors.imagenComplete && (
-                                <Text style={styles.error}>
-                                    {errors.imagenComplete.message}
+                        <View 
+                            style={{
+                                backgroundColor: "#ffffff", 
+                                padding: 20,
+                                borderRadius: 20}}>
+                            <Image source={{ uri: input.imagen }} style={styles.image}/>
+
+                            <View 
+                            style={{
+                                backgroundColor: "#e6f6c5", 
+                                padding: 20,
+                                borderRadius: 20}}>
+                                <Text style={{fontSize: 20, marginVertical: 5}}>Comentario: </Text>
+                                <Text style={{fontSize: 20, textAlign: 'center', marginBottom: 20}}>
+                                    {input.comentario}
                                 </Text>
-                            )}
-                        
-
-                            <FormInputText 
-                                control={control}
-                                controllerName={'comentario'}
-                                patternValue={/[A-Za-z0-9]+/}
-                                patterMessage='Debe ingresar un nombre válido'
-                                inputPlaceHolder='Inserte un comentario'
-                                errors={errors}
-                            />
-                        
-                            <CustomButton
-                                btnBgColor='#6892d5'
-                                btnText='Enviar'
-                                onPress={handleSubmit(onSubmit)}
-                            />
-                        </>
+                            </View>
+                        </View>
+                    </View>
                 </ScrollView>
             </View>
         </SafeAreaView>
@@ -178,17 +84,12 @@ const styles = StyleSheet.create({
 	scrollView: {
 		marginHorizontal: 30,
 	},
-	error: {
-		color: 'red',
-		marginTop: 5,
-		fontWeight: 650,
-		fontSize: 16,
-	},
     image: {
 		width: 200,
 		height: 200,
-		borderRadius: 15,
+		borderRadius: 30,
+		margin: 10,
 		padding: 10,
-		resizeMode: 'center'
-	}
+		alignSelf: 'center',
+	},
 });
