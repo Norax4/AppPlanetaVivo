@@ -6,6 +6,9 @@ import {
 	FlatList,
 	ScrollView,
 	Image,
+	Modal,
+	Button,
+	Alert
 } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../database/authContext';
@@ -15,6 +18,8 @@ import {
 	fetchAllChallenges,
 	fetchAllChallInputs,
 } from '../../database/fetchFunctions';
+import { Reto } from '../../components/Reto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function UserPanel({ navigation }) {
 	const { user } = useContext(AuthContext);
@@ -23,6 +28,8 @@ export function UserPanel({ navigation }) {
 	const [listState, setListState] = useState('creado');
 	const [createdChallenges, setCreatedChall] = useState([]);
 	const [partakenChallenges, setPartakenChall] = useState([]);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [challenge, setChallenge] = useState(null);
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -53,21 +60,66 @@ export function UserPanel({ navigation }) {
 		}
 	};
 
+	const fullDelete = async (object) => {
+		setModalVisible(false);
+		try {
+			const keys = await AsyncStorage.getAllKeys();
+			const key = keys.find(k => k.indexOf(object.nombreReto) !== -1);
+
+			await AsyncStorage.removeItem(key);
+
+			console.log(key);
+
+			Alert.alert('Éxito', 'Item eliminado correctamente');
+		} catch (error) {
+			console.error('Error eliminando item:', error);
+			Alert.alert('Error', 'No se pudo eliminar el item');
+		}
+	};
+
 	//Items de las listas
 	const Item = ({ object }) => {
 		return (
-			<View key={object.nombreReto} style={styles.itemView}>
-				<Text>{object.nombreReto}</Text>
+			<View 
+				key={object.nombreReto} 
+				style={{
+					padding: 3,
+					marginVertical: 10,
+					paddingHorizontal: 10,
+					borderRadius: 3,
+					backgroundColor: '#085f63'
+				}}
+			>
+
+				<Text 
+					style={{fontSize: 20,
+					fontWeight: 700,
+					color: '#fff',
+					marginVertical: 5}}
+				>
+					{object.nombreReto}
+				</Text>
+				
 				{listState === 'creado' ? (
-					<CustomButton
-						onPress={() =>
-							navigation.navigate('RegisterChallenge', {
-								challenge: object,
-							})
-						}
-						btnText='Editar reto'
-						btnBgColor='#6892d5'
-					/>
+					<View style={{marginBottom: 10}}>
+						<CustomButton
+							onPress={() =>
+								navigation.navigate('RegisterChallenge', {
+									challenge: object,
+								})
+							}
+							btnText='Editar reto'
+							btnBgColor='#6892d5'
+						/>
+						<CustomButton
+							onPress={() =>
+								{setModalVisible(true); 
+								setChallenge(object)}
+							}
+							btnText='Eliminar reto'
+							btnBgColor='#cc3820'
+						/>
+					</View>
 				) : (
 					<CustomButton
 						onPress={() =>
@@ -114,8 +166,52 @@ export function UserPanel({ navigation }) {
 						onPress={() => changeList()}
 					/>
 				</ScrollView>
+
+				<Modal
+					visible={modalVisible}
+					animationType='slide'
+					transparent={true}
+				>
+					<View
+					style={{
+						flex: 1,
+						backgroundColor: 'rgba(0,0,0,0.5)',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+					>
+						<View
+						style={{
+							backgroundColor: 'white',
+							padding: 20,
+							borderRadius: 10,
+							width: '90%',
+						}}
+						>
+							<Text style={{fontSize: 30, margin: 10}}>
+								¡Cuidado!
+							</Text>
+							<Text style={{fontSize: 30, margin: 10, textAlign: 'center'}}>
+								¿Esta seguro de querer eliminar este reto?
+							</Text>
+
+							<Button
+							title='Eliminar'
+							color="#cc3820"
+							onPress={() => fullDelete(challenge)}
+							/>
+							<Button
+								title='Cancelar'
+								onPress={() => setModalVisible(false)}
+								color='gray'
+							/>
+						</View>
+					</View>
+				</Modal>
+
 				{listState === 'creado' ? (
 					<FlatList
+						style={{ marginBottom: 100 }}
 						contentContainerStyle={{ paddingHorizontal: 20 }}
 						data={createdChallenges}
 						renderItem={({ item }) => <Item object={item} />}
@@ -123,6 +219,7 @@ export function UserPanel({ navigation }) {
 					/>
 				) : (
 					<FlatList
+						style={{ marginBottom: 100 }}
 						contentContainerStyle={{ paddingHorizontal: 20 }}
 						data={partakenChallenges}
 						renderItem={({ item }) => <Item object={item} />}
