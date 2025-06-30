@@ -18,9 +18,9 @@ export function RegisterChallenge({route, navigation}) {
 	const {
 		control,
 		handleSubmit,
-		setValue,
+		reset,
 		formState: { errors },
-	} = useForm({
+	} = useForm(/*{
 		defaultValues: {
 			nombreReto: '',
 			descripcion: '',
@@ -28,33 +28,36 @@ export function RegisterChallenge({route, navigation}) {
 			fechaLimite: '',
 			puntaje: ''
 		}
-	});
+	}*/);
 
 	useEffect(() => {
 		if (challenge != null) {
-			//setValue
+			reset(challenge);
 		}
-	})
+	}, [])
 
-	const registerChallenge = async (challengeSet) => {
-		const existe = await AsyncStorage.getItem(
-			challengeSet.nombreReto.toLowerCase()
-		);
-		if (existe) {
-			Alert.alert('Error','El reto ya existe');
-		}
+	const registerChallenge = async (challengeData) => {
 
-		const extraInfo = {
+		const info = {
 			usuario: { nombreUser: user.nombreUser, email: user.email },
 		};
 
 		const completeChallenge = {
-			...challengeSet,
-			...extraInfo,
-		};
+			...challengeData,
+			...info
+		}
+
+		let key;
+		
+		if (challenge != null) {
+			const keys = await AsyncStorage.getAllKeys();
+			key = keys.find(k => k.indexOf(challenge.nombreReto) !== -1);
+		} else {
+			key = `reto_${challengeData.nombreReto}_${user.email}`;
+		}
 
 		await AsyncStorage.setItem(
-			challengeSet.nombreReto,
+			key,
 			JSON.stringify(completeChallenge)
 		);
 

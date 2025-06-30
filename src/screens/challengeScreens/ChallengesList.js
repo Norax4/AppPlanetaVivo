@@ -100,6 +100,7 @@ export function ChallengesList({ navigation }) {
 		}
 	};
 
+	//UseEffect para obtener los retos
 	useEffect(() => {
 		const fetch = async () => {
 			const data = await fetchAllChallenges();
@@ -162,6 +163,8 @@ export function ChallengesList({ navigation }) {
 							width: '90%',
 						}}
 					>
+
+
 						<Text style={{ fontSize: 18, marginBottom: 10 }}>
 							Comentario para: {retoSeleccionado?.nombreReto}
 						</Text>

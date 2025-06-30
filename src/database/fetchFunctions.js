@@ -56,7 +56,7 @@ export async function fetchAllChallInputs() {
                 return null;
                 }
             })
-            .filter(item => item && item.location);
+            .filter(item => item && item.ubicacion);
                 
         if (inputList.length > 0) {
             return inputList;
